@@ -1,0 +1,4676 @@
+Advanced linear models for data science
+Brian Caffo January 6, 2017
+
+Contents
+
+1 Introduction
+
+1
+
+1.1 Prerequisites . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+
+2 Background
+
+2
+
+2.1 Example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
+
+2.1.1 Coding example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+
+2.2 Averages . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+
+2.3 Centering . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+
+2.3.1 Coding example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+
+2.4 Variance . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+
+2.4.1 Coding example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+
+3 Single parameter regression
+
+6
+
+3.1 Mean only regression . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+
+3.2 Coding example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+
+3.3 Regression through the origin . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+
+3.4 Centering first . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+
+3.4.1 Coding example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+
+3.5 Bonus videos . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+
+4 Linear regression
+
+9
+
+4.1 Introduction to linear regression . . . . . . . . . . . . . . . . . . . . . . . . . 9
+
+4.1.1 Coding example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+
+4.2 Fitted values . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+
+4.2.1 Coding example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+
+4.3 Residuals . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+
+4.4 Extension to other spaces . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+
+5 Least squares
+
+13
+
+5.1 Basics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+
+5.1.1 Coding example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+
+5.2 A second derivation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+
+5.3 Connection with linear regression . . . . . . . . . . . . . . . . . . . . . . . . 15
+
+5.4 Projections . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+
+5.5 Full row rank case . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+
+1
+
+CONTENTS
+
+2
+
+5.6 A third derivation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17 5.6.1 Coding example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+
+6 Conceptual examples of least squares
+
+20
+
+6.1 Mean only regression . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+
+6.2 Regression through the origin . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+
+6.3 Linear regression . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+
+6.4 ANOVA . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+
+6.5 ANCOVA . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+
+7 Bases
+
+23
+
+7.1 Introduction to full rank bases . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+
+7.2 Principal component bases . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
+
+7.2.1 Coding example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+
+8 Residuals and variability
+
+26
+
+8.1 Residuals . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
+
+8.2 Partitioning variability . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
+
+9 Expectations
+
+28
+
+9.1 Expected values . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 28
+
+9.2 Variance . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+
+9.3 Multivariate covariances . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+
+9.4 Quadratic form moments . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+
+9.5 BLUE . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+
+10 The normal distribution
+
+32
+
+10.1 The univariate normal distribution . . . . . . . . . . . . . . . . . . . . . . . . 32
+
+10.2 The multivariate normal distribution . . . . . . . . . . . . . . . . . . . . . . . 32
+
+10.3 Singular normal . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+
+10.4 Normal likelihood . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+
+10.5 Conditional distributions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34
+
+10.5.1 Important example . . . . . . . . . . . . . . . . . . . . . . . . . . . . 35
+
+10.5.2 Gaussian graphical models . . . . . . . . . . . . . . . . . . . . . . . 36
+
+10.5.3 Bayes calculations . . . . . . . . . . . . . . . . . . . . . . . . . . . . 36
+
+11 Distributional results
+
+38
+
+11.1 Quadratic forms . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 38
+
+11.2 Statistical properties . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 38
+
+11.2.1 Confidence interval for the variance . . . . . . . . . . . . . . . . . . 39
+
+11.3 T statistics . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 39
+
+11.4 F tests . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 40
+
+11.5 Coding example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 40
+
+11.6 Prediction intervals . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 42
+
+11.6.1 Coding example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 42
+
+11.7 Confidence ellipsoids . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 43
+
+CONTENTS
+
+3
+
+12 Residuals revisited
+
+45
+
+12.1 Introduction to residuals . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 45
+
+12.1.1 Coding example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 45
+
+12.2 Press residuals . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 46
+
+12.2.1 Computing PRESS residuals . . . . . . . . . . . . . . . . . . . . . . 47
+
+12.3 Externally studentized residuals . . . . . . . . . . . . . . . . . . . . . . . . . 48
+
+12.4 Coding example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 48
+
+13 Under and overfitting
+
+50
+
+13.1 Impact of underfitting . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 50
+
+13.2 Impact of overfitting . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 51
+
+13.3 Variance under an overfit model . . . . . . . . . . . . . . . . . . . . . . . . . 51
+
+13.3.1 Variance inflation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 51
+
+13.3.2 Variance inflation factors . . . . . . . . . . . . . . . . . . . . . . . . . 52
+
+13.3.3 Coding example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 53
+
+14 Parameter estimability and penalties
+
+55
+
+14.1 Estimability . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 55
+
+14.1.1 Why it's useful . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 56
+
+14.2 Linear constraints . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 56
+
+14.2.1 Likelihood ratio tests . . . . . . . . . . . . . . . . . . . . . . . . . . . 57
+
+14.2.2 Example use . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 59
+
+14.2.3 Coding examples . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 59
+
+14.3 Ridge regression . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 61
+
+14.3.1 Coding example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 63
+
+14.4 Lasso regression . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 63
+
+14.4.1 Coding example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 64
+
+15 Asymptotics
+
+65
+
+15.1 Convergence in probability . . . . . . . . . . . . . . . . . . . . . . . . . . . 65
+
+15.2 Normality . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 67
+
+16 Mixed models
+
+69
+
+16.1 General case . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 70
+
+16.2 REML . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 71
+
+16.3 Prediction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 72
+
+16.4 P-splines . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 72
+
+16.4.1 Regression splines . . . . . . . . . . . . . . . . . . . . . . . . . . . . 72
+
+16.4.2 Coding example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 73
+
+16.5 Further reading . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 73
+
+17 Bayes analysis
+
+74
+
+17.1 Introduction to Bayesian analysis . . . . . . . . . . . . . . . . . . . . . . . . 74
+
+17.2 Basic Bayesian models . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 75
+
+17.2.1 Binomial . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 75
+
+CONTENTS
+
+4
+
+17.2.2 Poisson . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 76 17.3 Bayesian Linear Models . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 76
+17.3.1 Bayesian Linear Models . . . . . . . . . . . . . . . . . . . . . . . . . 76 17.4 Monte Carlo sampling . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 77
+17.4.1 Sequential Monte Carlo . . . . . . . . . . . . . . . . . . . . . . . . . 77 17.4.2 Gibbs sampling . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 77
+
+Preface
+This book is written as a companion book to the Advanced Linear Models for Data Science Coursera class. Also check out the Data Science Specialization by Brian Caffo, Roger Peng and Jeff Leek. However, if you do not take the class, the book mostly stands on its own. A useful component of the book is a series of [LINK] YouTube videos that comprise the Coursera class.
+The book is intended to be a low cost introduction to the important field of advanced linear models. The intended audience are students who are numerically and computationally literate, have taken a course on statistical inference, have taken a regression class, can program in R and have a fairly high level of mathematical sophistication including: linear algebra, multivariate calculus and some proof-based mathematics. The book is offered for free with variable pricing (html, pdf, epub, mobi) on LeanPub.
+i
+
+Chapter 1
+Introduction
+Linear models are the cornerstone of statistical methodology. Perhaps more than any other tool, advanced students of statistics, biostatistics, machine learning, data science, econometrics, etcetera should spend time learning the finer grain details of this subject.
+In this book, we give a brief, but rigorous treatment of advanced linear models. It is advanced in the sense that it is of level that an introductory PhD student in statistics or biostatistics would see. The material in this book is standard knowledge for any PhD in statistics or biostatistics.
+1.1 Prerequisites
+Students will need a fair amount of mathematical prerequisites before trying to undertake this class. First, is multivariate calculus and linear algebra. Especially linear algebra, since much of the early parts of linear models are direct applications of linear algebra results applied in a statistical context. In addition, some basic proof based mathematics is necessary to follow the proofs.
+We will also assume some basic mathematical statistics. The courses Mathematical Biostatistics Boot Camp 1 and Mathematical Biostatistics Boot Camp 2 by the author on Coursera would suffice. The Statistical Inference is a lower level treatment that with some augmentated reading would also suffice. There is a Leanpub book for this course as well.
+Some basic regression is necessary. The Regression Models also by the author would suffice. Note that there is a Leanpub book for this class.
+1
+
+Chapter 2 Background
+
+Watch this video before beginning. Before we begin we need a few matrix prerequisites. Let, f : Rp  R, be a function
+from the p dimensional real line to the real line. Assume that f is linear, i.e. f (x) = atx Then f = a. That is, the function that contains the elementwise derivatives of f (the gradient) is constant with respect to x.
+Consider now the matrix A (p × p) and the quadratic form:
+f (x) = xtAx.
+Then f = 2Atx. The second derivative matrix (Hessian) (where the i, j element is the derivative with respect to the i and j elements of this vector) is then 2A.
+
+2.1 Example
+
+Consider an example that we will become very familiar with, least squares. Let y be an array of dimension n × 1 and X be an n × p full rank matrix. Let  be a p vector of unknowns. Consider trying to minimize the function:
+f () = ||y - X||2 = (y - X)t(y - X) = yty - 2ytXt + tXtX.
+
+The gradient of f (with respect to ) is:
+
+f () = -2Xy + XtX.
+
+(2.1)
+
+A useful result is that if X is of full column rank then XtX is square and full rank and hence invertible. Thus, we can calculate the root of the gradient (2.1) and obtain the solution:
+
+ = (XtX)-1Xty.
+
+We will talk about these solutions at length. Also, it remains necessary to show that this is a minimum and not just an inflection point. We can do this by checking a second derivative condition. Taking the second derivative of (2.1) we get
+
+XtX,
+
+a positive definite matrix. Thus our solution is indeed a minimum.
+
+2
+
+CHAPTER 2. BACKGROUND
+
+3
+
+2.1.1 Coding example
+Watch this video before beginning. Load the mtcars dataset in R with data(mtcars). Let's set our y vector as y =
+mtcars$mpg and our X matrix as a vector of ones, horsepower and weight: x = cbind(1, mtcars$hp, mtcars$wt). Let's find the value of  that minimizes ||y - X||2.
+
+> y = mtcars$mpg
+
+> x = cbind(1, mtcars$hp, mtcars$wt)
+
+> solve(t(x) %*% x) %*% t(x) %*% y
+
+[,1]
+
+[1,] 37.22727012
+
+[2,] -0.03177295
+
+[3,] -3.87783074
+
+> # Compare with the estimate obtained via lm
+
+> coef(lm(mpg ~ hp + wt, data = mtcars))
+
+(Intercept)
+
+hp
+
+wt
+
+37.22727012 -0.03177295 -3.87783074
+
+2.2 Averages
+
+Watch this video before beginning.
+
+Consider some useful notational conventions we'll use. 1n is an n vector containing only ones while 1n×p is an n × p matrix containing ones. I is the identity matrix, which we
+
+will subscript if a reminder of the dimension is necessary.
+
+We denote by y¯ the average of the n vector y.
+
+Verify for yourself that y¯ =
+
+1 n
+
+yt1n
+
+=
+
+1 n
+
+1tny.
+
+Furthermore,
+
+note
+
+that
+
+(1tn1n)-1
+
+=
+
+1 n
+
+so
+
+that
+
+y¯ = (1tn1n)-11nt y.
+
+Consider our previous least squares problem. If X = 1n and  is just the scalar . The least squares function we'd like to minimize is:
+
+(y - 1n)t(y - 1n) = ||y - 1n||2.
+Or, what constant vector best approximates y it the terms of minimizing the squared Euclidean distance? From above, we know that the solution is of the form
+
+ = (XtX)-1Xty
+
+which in this specific case works out to be:
+
+y¯ = (1nt 1n)-11tny. That is, the average is the best scalar estimate to minimize the Euclidean distance.
+
+CHAPTER 2. BACKGROUND
+
+4
+
+2.3 Centering
+
+Continuing to work with our vector of ones, note that
+y - 1ny¯
+is the centered version of y (in that it has the mean subtracted from each element of the y vector). We can rewrite this as:
+y~ = y - 1ny¯ = y - (1tn1n)-11t1y = I - 1n(1tn1n)-11t y.
+In other words, multiplication by the matrix {I - 1n(1nt 1n)-11t} centers vectors. To check that y~ is centered, consider multiplying by 1n (which sums its elements).
+1tny~ = 1nt I - 1n(1tn1n)-11tn y = 1nt - 1nt 1n(1nt 1n)-11nt = 1tn - 1tn y = 0.
+This operation can be very handy for centering matrices. For example, if X is an n × p matrix then the matrix X~ = {I - 1n(1nt 1n)-11t} X is the matrix with every column centered. Conversely, right multiplication by I - 1p(1tp1p)-11tp centers every row of X.
+
+2.3.1 Coding example
+Watch this video before beginning. Let's take our X matrix defined previously from the mtcars dataset and mean center
+it. We'll contrast using matrix manipulations versus (preferable) R functions.
+> n = nrow(x) > I = diag(rep(1, n)) > H = matrix(1, n, n) / n > xt = (I - H) %*% x > apply(xt, 2, mean) [1] 0.000000e+00 0.000000e+00 2.168404e-16 > ## Doing it using sweep > xt2 = sweep(x, 2, apply(x, 2, mean)) > apply(xt2, 2, mean) [1] 0.000000e+00 0.000000e+00 3.469447e-17
+
+2.4 Variance
+
+Watch this video before beginning. The standard sample variance is the average deviation of the observations from the
+sample mean (usually using n - 1 rather than n). That is,
+
+S2
+
+=
+
+n
+
+1 -
+
+||y 1
+
+-
+
+1ny¯||2
+
+=
+
+n
+
+1 -
+
+y~ty~ 1
+
+CHAPTER 2. BACKGROUND
+
+5
+
+We can write out the norm component of this as:
+
+yt I - 1n(1nt 1n)-11nt I - 1n(1nt 1n)-11nt y = yt I - 1n(1nt 1n)-11tn y.
+
+Thus, our sample variance is a fairly simple quadratic form. Notice the fact that the matrix
+
+{I - 1n(1tn1n)-11tn} is both symmetric and idempotent.
+
+Similarly,
+
+if
+
+we
+
+have
+
+two
+
+vectors,
+
+y
+
+and
+
+z
+
+then
+
+1 n-1
+
+y
+
+{I
+
+-
+
+1n(1nt 1n)-1
+
+1nt }
+
+z
+
+is
+
+the
+
+empir-
+
+ical covariance between them. This is then useful for matrices. Consider that
+
+1 Xt n-1
+
+I - 1n(1nt 1n)-11nt
+
+X = 1 X~ tX~ n-1
+
+is a matrix where each element is the empirical covariance between columns of X. This is called the variance/covariance matrix.
+
+2.4.1 Coding example
+Watch this video before beginning. Let's manually calculate the covariance of the x matrix from before.
+
+> n = nrow(x)
+
+> I = diag(rep(1, n))
+
+> H = matrix(1, n, n) / n
+
+> round(t(x) %*% (I - H) %*% x / (n - 1), 6)
+
+[,1]
+
+[,2]
+
+[,3]
+
+[1,] 0 0.00000 0.000000
+
+[2,] 0 4700.86694 44.192661
+
+[3,] 0 44.19266 0.957379
+
+> var(x)
+
+[,1]
+
+[,2]
+
+[,3]
+
+[1,] 0 0.00000 0.000000
+
+[2,] 0 4700.86694 44.192661
+
+[3,] 0 44.19266 0.957379
+
+Recall, the first column was all ones; thus the row and column of zeros in the variance.
+
+Chapter 3
+Single parameter regression
+3.1 Mean only regression
+Consider least squares where we only want horizontal lines. Let our outcome be y = (y1, . . . , yn)t and recall that 1n is an n vector of ones. We want to minimize f (µ) = ||y-1µ||2 with respect to µ.
+Taking derivatives with respect to µ we obtain that df = -2ny¯ + 2nµ. dµ
+This has a root at µ^ = y¯. Note that the second derivative is 2n > 0. Thus, the average is the least squares estimate in the sense of minimizing the Euclidean distance between the observed data and a constant vector. We can think of this as projecting our n dimensional onto the best 1 dimensional subspace spanned by the vector 1. We'll rely on this form of thinking a lot throughout the text.
+3.2 Coding example
+Let's use the diamond dataset > library(UsingR); data(diamond) > y = diamond$price; x = diamond$carat > mean(y) [1] 500.0833 > #using least squares > coef(lm(y ~ 1)) [1] 500.0833 Thus, in this example the mean only least squares estimate obtained via lm is the empirical mean.
+6
+
+CHAPTER 3. SINGLE PARAMETER REGRESSION
+
+7
+
+3.3 Regression through the origin
+
+Watch this video before beginning. Let x = (x1, . . . , xn) be another vector. Consider now the regression through the
+origin problem. We want to minimize f () = ||y - x||2 with respect to . This is called regression through the origin for the following reason. First note that the pairs, (xi, yi), form a scatterplot. Least squares is then finding the best multiple of the x vector to approximate y. That is, finding the best line of the form y = x to fit the scatter plot. Thus we are considering lines through the origin hence the name regression through the origin.
+Notice that f () = yty - 2ytx + xtx. Then
+
+df = -2y x + 2xtx d
+
+Setting this equal to zero we obtain the famous equation:
+
+^ = ytx = y, x xtx x, x
+
+We'll leave it up to the reader to check the second derivative condition. Also, we'll leave it up to you to show that the mean only regression is a special case that agrees with the result.
+Notice that we have shown the function
+
+g : Rn  R
+
+defined by g(y) =
+
+y,x x,x
+
+x
+
+projects
+
+any
+
+n
+
+dimensional
+
+vector
+
+y
+
+into
+
+the linear
+
+space spanned
+
+by the single vector x, {x |   R}.
+
+3.4 Centering first
+
+Watch this video before beginning.
+
+A line through the origin is often not useful. Consider centering the y and x first.
+
+The the origin would be at the mean of the y vector and the mean of the x vector. Let
+
+y~ = {I - 1n(1tn1n)-11nt } y and x~ = {I - 1n(1nt 1n)-11nt } x. Then regression through the
+
+origin (minimizing ||y~ - x~||2 for ) for the centered data yields the solution ^ =
+
+y~,x~ x~,x~
+
+.
+
+However, from the previous chapter, we know that
+
+y~, x~ = yt I - 1n(1nt 1n)-11tn xt = (n - 1)^xyxy
+
+and similarly x~, x~ = (n - 1)^y2. Here, ^xy and ^y2 are the empirical correlation and variance, respectively. Thus our regression through the origin estimate is
+
+^
+
+=
+
+xy
+
+y . x
+
+That is, the best fitting line that has to go through the center of the data has a slope equal
+
+to the correlation times the ratio of the standard deviations. If we reverse the role of x
+
+and y, we simply invert the ratio of the standard deviations. Thus we also note, that if we
+
+center and scale our data first so that the resulting vectors have mean 0 and variance 1,
+
+our slope is exactly the correlation between the vectors.
+
+CHAPTER 3. SINGLE PARAMETER REGRESSION
+
+8
+
+3.4.1 Coding example
+Watch this video before beginning. Let's continue with the diamond example. We'll center the variables first.
+> yc = y - mean(y); > xc = x - mean(x) > sum(yc * xc) / sum(xc * xc) [1] 3721.025 > coef(lm(yc ~ xc - 1))
+xc 3721.025 > cor(x, y) * sd(y) / sd(x) [1] 3721.025
+
+3.5 Bonus videos
+Watch these videos before moving on. (I had created them beofre I reorganized chapters.) Sneak preview of projection logic. Coding example. Sneak preview of linear regression. Sneak preview of regression generalizations.
+
+Chapter 4 Linear regression
+
+4.1 Introduction to linear regression
+
+Watch this video before beginning. Now let's consider upping the ante to two parameters. Consider the minimizing
+
+||y - (01n + 1x)||2
+
+(4.1)
+
+over 1 and 2. Let's think about this in two ways. First, the space
+
+ = {01n + 1x | 0, 1  R}
+
+is a two dimensional subspace of Rn. Therefore, the least squares equation finds the projection of the observed data point onto two dimensional subspace spanned by the two vectors 1n and x.
+The second way to think about the fit is to consider the scatterplot of points (xi, yi). The goal is to find the best fitting line of the form y = 0 + 1x by minimizing the sum of the squared vertical distances between the points and the fitted line.
+Given what we've done already, it's surprisingly easy to minimize (4.1). Consider fixing 1 and minimizing with respect to 0.
+
+||y - 1x - 01n||2
+Let ^0(1) be the least squares minimum for 0 for a given 1. By our results from mean only regression we know that
+
+^0(1)
+
+=
+
+1 (y
+n
+
+-
+
+1x)1n
+
+=
+
+y¯ -
+
+1x¯.
+
+Therefore, plugging this into the least squares equation, we know that
+
+(4.1)  ||y - y¯1n + 1(x - x¯1n)||2 = ||y~ - 1x~||2,
+
+(4.2)
+
+where y~ and x~ are the centered versions of y and x, respectively. We know from the last
+
+chapter (4.2) is minimized by
+
+^1
+
+=
+
+^xy
+
+^y ^x
+
+.
+
+9
+
+CHAPTER 4. LINEAR REGRESSION
+
+10
+
+Plugging this into ^0(^1) we get that
+^0 = y¯ - 1x¯.
+Therefore, the slope estimate from including an intercept is identical to that of regression through the origin after centering the data. The intercept simply forces the line through the average of the Y's and X's.
+
+4.1.1 Coding example
+
+Watch this video before beginning.
+
+> library(UsingR)
+
+> data(diamond)
+
+> x = diamond$carat
+
+> y = diamond$price
+
+> beta1 = cor(x, y) * sd(y) / sd(x)
+
+> beta0 = mean(y) - beta1 * mean(x)
+
+> c(beta0, beta1)
+
+[1] -259.6259 3721.0249
+
+> # versus estimate with lm
+
+> coef(lm(y ~ x))
+
+(Intercept)
+
+x
+
+-259.6259 3721.0249
+
+> #Centered regression through the origin
+
+> sum(yc * xc) / sum(xc^2)
+
+[1] 3721.025
+
+4.2 Fitted values
+Watch this video before beginning. We define y^ = (y^1, . . . , y^n)t to be the vector of fitted values. Whereas y lives in Rn, y^
+lives in , the two dimensional linear subspace of Rn spanned by the two vectors, 1n and x. We define y^ as ^0 + ^1x. We can think of our least squares as minmizing
+||y - y^||
+over all y^  . The fitted values are the orthogonal projection of the observed data onto this linear subspace.
+4.2.1 Coding example
+Watch this video before beginning. Getting the predicted value for x = 0.20 (refer to the previous section diamond exam-
+ple).
+
+CHAPTER 4. LINEAR REGRESSION
+
+11
+
+> beta0 + beta1 * .20 [1] 484.5791 > predict(lm(y ~ x), newdata = data.frame(x = .2))
+1 484.5791
+
+4.3 Residuals
+
+Watch this video before beginning.
+
+Define e = y - y^ to be the vector of residuals. Each residual is the vertical distance
+
+between y and the fitted regression line. Thinking geometrically, the residuals are the
+
+orthogonal vector pointing to y from y^. Least squares can be thought of as minimizing the
+
+sum of the squared residuals. The quantity ||e||2 is called the sum of the squared errors
+
+while
+
+1 n-2
+
+||e||2
+
+is
+
+called
+
+the
+
+mean
+
+squared
+
+error
+
+or
+
+the
+
+residual
+
+variance.
+
+Watch this video of this coding exercise.
+
+> yhat = beta0 + beta1 * x > e = y - yhat > max(abs(e - resid(lm(y ~ x))))
+
+4.4 Extension to other spaces
+
+Watch this video before beginning.
+
+It is interesting to note that nothing we've discussed is intrinsic to Rn. Any space with
+
+a norm and inner product and absent of extraordinary mathematical pathologies would
+
+suffice. Hilbert spaces are perhaps the most directly extendable.
+
+As an example, let's develop linear regression for a space of (Lebesgue) square in-
+
+tegrable functions. That is, let y be in the space of functions from [0, 1]  R with finite
+
+squared itegral. Define the inner product as
+
+f, g
+
+=
+
+1 0
+
+f
+
+(t)g(t)dt.
+
+Consider finding the
+
+best multple approximation to y from the function x (also in that space).
+
+Thus, we want to minimize:
+
+1
+||y - 1x||2 = {y(t) - 1x(t)}2dt.
+0
+
+You might have guessed that the solution will be ^ =
+
+y,x x,x
+
+=
+
+y,x ||x||2
+
+.
+
+Let's
+
+show
+
+it
+
+(knowing
+
+CHAPTER 4. LINEAR REGRESSION
+
+12
+
+that this is the solution):
+
+||y - 1x||2 = ||y - ^1x + ^1x - 1x||2
+
+= ||y - ^1x¯||2 - 2 y - ^1x, ^1x - 1x + ||^1x - 1x||2
+
+ ||y - ^1x¯||2 - 2 y - ^1x, ^1x - 1x
+
+= ||y - ^1x¯||2 - 2^1 y, x + 21 y, x + 2^12||x||2 - 2^11||X||2
+
+=
+
+||y
+
+-
+
+^1x¯||2
+
+-2
+
+y, x 2 ||x||2
+
++
+
+21
+
+y, x
+
++2
+
+y, x 2 ||x||2 - 21
+
+y, x
+
+= ||y - ^1x||2
+
+Therefore, ^1 is the least squares estimate.
+
+We can extend this to include an intercept. Let j be a function that is constant at 1. Let
+
+y¯ =
+
+1 0
+
+y(t)dt
+
+be
+
+the
+
+average
+
+of
+
+y
+
+over
+
+the
+
+domain
+
+and
+
+define
+
+x¯
+
+similarly.
+
+Then
+
+consider
+
+minimizing (over 0 and 1)
+
+||y - 0j - 1x||2
+
+First, hold 1 fixed. By our previous result, we have that the minimizer must satisfy:
+
+0 =< y - 1x, j > /||j||2 = y¯ - 1x¯.
+
+Plugging this back into our least squares equation we obtain that:
+
+||y - 0j - 1x||2  ||y - y¯ - 1(x - x¯)||2 = ||y~ - 1x~||2
+
+where y~ and x~ are the centered functions. We know that this is minimized by
+
+^1 =
+
+y~, x~ ||x~||2
+
+=
+
+xy
+
+y x
+
+.
+
+where xy =
+
+1 0
+
+{y(t)
+
+-
+
+y¯}{x(t)
+
+-
+
+x¯}dt
+
+is
+
+the
+
+functional
+
+correlation
+
+between
+
+x
+
+and
+
+y
+
+and
+
+y2 = 01{y(t) - y¯}2dt (and x2 is defined similarly) is the functional variance. Further, we
+
+have that ^0 = y¯ - ^1x¯.
+
+Several take-home points are in order. First, we see that defining empirical means,
+
+covariances and variances for functional data is fairly straightforward. Secondly, we see
+
+that a version of linear regression applied to functional data is identical in all salient re-
+
+spects to ordinary linear regression. Thirdly, I hope that you can start to see a pattern
+
+that multivariate regression (in vector and more general spaces) can be built up easily by
+
+regression through the origin. It's an interesting, though tedious, exercise to derive mul-
+
+tivariate regression only allowing oneself access to regression through the origin. We'll
+
+find a more convenient derivation in the next chapter. However, it's oddly pleasant that so
+
+much of multivariable regression relies on this simple result.
+
+Chapter 5 Least squares
+
+In this chapter we develop least squares.
+
+5.1 Basics
+
+Watch this video before beginning. Let X be a design matrix, notationally its elements and column vectors are:
+
+ x11 . . . x1p 
+
+X= 
+
+...
+
+...
+
+...
+
+ 
+
+=
+
+[x1
+
+.
+
+.
+
+.
+
+xp].
+
+xn1 . . . xnp
+
+We are assuming that n  p and X is of full (column) rank. Consider ordinary least
+
+squares
+
+||y - X||2 = (y - X)t(y - X) = yty - 2ytX + tXtX.
+
+(5.1)
+
+If we were to minimize (5.1) with respect to , consider using our matrix derivative results
+
+from Chapter 2.
+
+d (5.1) = -2Xty + 2XtX. d
+
+Solving for 0 leads to the so called normal equations:
+
+XtX = Xty.
+
+Recall that XtX retains the same rank as X. Therefore, it is a full rank p × p matrix and hence is invertible. We can then solve the normal equations as:
+
+^ = (XtX)-1Xty.
+
+(5.2)
+
+The Hessian of (5.1) is simply 2XtX, which is positive definite. (This is clear since for any non-zero vector, a, we have that Xta is non-zero since X is full rank and then atXtXa = ||Xa||2 > 0.) Thus, the root of our derivative is indeed a minimum.
+
+13
+
+CHAPTER 5. LEAST SQUARES
+
+14
+
+5.1.1 Coding example
+Watch this video before beginning.
+
+> y = swiss$Fertility
+
+> x = as.matrix(swiss[,-1])
+
+> solve(t(x) %*% x, t(x) %*% y)
+
+[,1]
+
+1
+
+66.9151817
+
+Agriculture
+
+-0.1721140
+
+Examination
+
+-0.2580082
+
+Education
+
+-0.8709401
+
+Catholic
+
+0.1041153
+
+Infant.Mortality 1.0770481
+
+> summary(lm(y ~ x - 1))$coef
+
+Estimate Std. Error t value Pr(>|t|)
+
+x1
+
+66.9151817 10.70603759 6.250229 1.906051e-07
+
+xAgriculture
+
+-0.1721140 0.07030392 -2.448142 1.872715e-02
+
+xExamination
+
+-0.2580082 0.25387820 -1.016268 3.154617e-01
+
+xEducation
+
+-0.8709401 0.18302860 -4.758492 2.430605e-05
+
+xCatholic
+
+0.1041153 0.03525785 2.952969 5.190079e-03
+
+xInfant.Mortality 1.0770481 0.38171965 2.821568 7.335715e-03
+
+5.2 A second derivation
+Watch this video before beginning. If you know the answer first, it's possible to derive the minimum to the least squares
+equation without taking any derivatives.
+||y - X||2 = ||y - X^ + X^ - X|| = ||y - x^ ||2 + 2(y - x^ )t(X^ - X) + ||X^ - X||2  ||y - x^ ||2 + 2(y - X^ )t(X^ - X) = ||y - x^ ||2 + 2(y - X(XtX)-1Xty)tX(^ - ) = ||y - X^ ||2 + 2yt(I - X(XtX)-1Xt)tX(^ - ) = ||y - X^ ||2 + 2yt(I - X(XtX)-1Xt)X(^ - ) = ||y - x^ ||2 + 2yt(X - X(XtX)-1XtX)(^ - ) = ||y - x^ ||2 + 2yt(X - X)(^ - ) = ||y - x^ ||2
+Thus, any value of  that we plug into the least squares equation is going to give us a larger norm than if we plug in ^ so that it is the unique minimum. Notice that going from line 5 to 6, we used the fact that I - X(XtX)-1Xt is symmetric. (It is also idempotent.)
+
+CHAPTER 5. LEAST SQUARES
+
+15
+
+Also, we used a fact that is very useful in general, I - X(XtX)-1Xt is orthogonal to any linear combination of the columns of X. This is try since if Xa is such a combination, then
+{I - X(XtX)-1Xt)}bXa = {X - X(XtX)-1XtX}a = (X - X)a = 0.
+This fact is extremely handy in working with linear models.
+
+5.3 Connection with linear regression
+
+Watch this video before beginning. Recall that the slope from linear regression worked out to be
+
+x - x¯1n, x - x¯1n -1 x - x¯1n, y - y¯1n = ^X-2^X2 Y
+where ^X2 Y is the empirical covariance between X and Y. (We rewrote this formula using the more convenient correlation.) In this form it is the covariance between x and y divided by the variance of the x's. Let's consider extending this in our matrix results.
+Let X = [1nX1], thus X contains an intercept and then p-1 other regressors. Similarly let  = (0, . . . , p-1)t = (01t)t. Consider now least squares
+
+||y - X|| = ||y - 1n0 - X11||
+
+If we were to hold 1 fixed we are faced with a mean only regression problem and the
+
+solution to 0(1) is
+
+1 (y
+n
+
+-
+
+X11)t1n
+
+=
+
+y¯
+
+-
+
+x¯t1
+
+where x¯ is the columnwise means of X. Plugging this back into our least squares equation
+
+for 0 we get
+
+||y - 1ny¯ - (X1 - 1nx¯t)1||2 = ||y~ - X~ 1||2
+
+where y~ and X~ are the centered versions of y and X. This is again just the least squares
+
+equation with the centered variables and thus we get that
+
+^1 = (X~ tX~ )-1X~ Y~ = ^1 =
+
+1
+
+-1
+X~ tX~
+
+1 X~ Y~ .
+
+n-1
+
+n-1
+
+The
+
+matrix
+
+1 n-1
+
+X~ t
+
+X~
+
+is
+
+the
+
+empirical
+
+variance
+
+covariance
+
+matrix
+
+of
+
+the
+
+columns
+
+of
+
+X
+
+while
+
+1 n-1
+
+X~ Y~
+
+is
+
+the
+
+vector
+
+of
+
+correlations
+
+of
+
+y
+
+with
+
+the
+
+columns
+
+of
+
+X.
+
+Therefore,
+
+if
+
+we
+
+include
+
+an intercept, our slope estimate is
+
+^ X-1X ^XY
+
+the inverse of the variance matrix associated with X time the correlation matrix between X and Y. This draws an exact parallel with the result from linear regression.
+
+CHAPTER 5. LEAST SQUARES
+
+16
+
+5.4 Projections
+
+Watch this video before beginning. The vector of fitted values is
+y^ = X(XtX)-1Xty
+and the vector of residuals is given by
+e = y - y^ = (I - X(XtX)-1Xt)y.
+Thus, multiplication by the matrix X(XtX)-1Xt takes any vector in Rn and produces the fitted values. The matrix X(XtX)-1Xt is called the projection matrix (for reasons that will become obvious) or the "hat matrix" (I guess because it transforms our Y into "Y hat", then perhaps it should be called the "hatting" matrix?).
+Multiplication by (I - X(XtX)-1Xt) produces the residuals. Notice that since the y^ vector is a linear combination of the X, it is orthogonal to the residuals:
+y^te = ytX(XtX)-1Xt(I - X(XtX)-1Xt)y = 0.
+It is useful to think of least squares in the terms of projections. Consider the column space of the design matrix,  = {X |   Rp}. This p dimensional space lives in Rn, so think of a plane in R3. Consider the vector y which lives in Rn. Multiplication by the matrix X(XtX)-1Xt projects y into . That is,
+y  X(XtX)-1Xty
+is the linear projection map between Rn and . The point y^ is the point in  that is closest to y and ^ is the specific linear combination of the columns of X that yields y^. e is the vector connecting y and y^, and it is orthogonal to all elements in .
+Logically the projection matrix must be idempotent. Consider that for any vector, multiplication by the projection matrix finds the closest element in . Therefore, we can't multiply again and find a closer one. That is, P y = P 2y for a projection matrix P and any y and thus P = P 2. Since we are dealing in Euclidean spaces, a projection matrix must also be symmetric. To see this, note that the residual must be orthogonal to any projected point, < (I - P )y, P w >= 0 = yt(I - P t)P w. Since this holds for all y and w, it must be the case that (I - P t)P = 0 or in other words P = P tP . Since the right hand side is symmetric, P must be symmetric. It's worth noting that this result is dependent the use of the Euclidean metric. If the inner product is < a, b >= at-1b (Mahalanobis distance), the the projection metric is necessarily idempotent, but not symmetric.
+Thinking this helps us interpret statistical aspects of least squares. First, if W is any p × p invertible matrix, then the fitted values, y^ will be the same for the design matrix XW. This is because the spaces
+{X |   Rp}
+and {XW |   Rp}
+
+CHAPTER 5. LEAST SQUARES
+
+17
+
+are the same, since if a = X then a = X via the relationship  = W and thus any element of the first space is in the second. The same argument implies in the other direction, thus the two spaces are the same.
+Therefore, any linear reorganization of the columns of X results in the same column space and thus the same fitted values. Furthermore, any addition of redundant columns to X adds nothing to the column space, and thus it's clear what the fit should be in the event that X is not full rank. Any full rank subset of the columns of X defines the same column and thus the same fitted values.
+
+5.5 Full row rank case
+In the case where X is n × n of full rank, then the columns of X form a basis for R . In this case, y^ = y, since y lives in the space spanned by the columns of X. All the linear model accomplishes is a lossless linear reorganization of y. This is perhaps surprisingly useful, especially when the columns of X are orthonormal (XtX = I). In this case, the function that takes the outcome vector and converts it to the coefficients is called a "transform". The most well known versions of transforms are Fourier and wavelet.
+
+5.6 A third derivation
+
+Watch this video before beginning. In this section we generate a third derivation of least squares. For vectors a (outcome)
+and b (predictor), define the coefficient function as:
+
+a, b
+
+c(a, b) =
+
+.
+
+||b||2
+
+and the residual function as
+
+e(a, b) = a - c(a, b)b
+
+We argue that the least squares estimate of outcome y for predictor matrix X = [x1 . . . xp] is obtained by taking successive residuals, in the following sense. Consider the least squares equation holding 2, . . . , p fixed:
+
+||y - x11 - . . . - xpp||2.
+
+(5.3)
+
+This is greater than or equal to if we replace 1 by it's estimate with the remainder fixed. That estimate being:
+c(y - x22 - . . . , xpp, x1).
+Plugging that back into the least squares equation we get
+
+(5.3)  ||e(y, x1) - e(x2, x1)2, . . . , e(xp, x1)p||2.
+
+(5.4)
+
+CHAPTER 5. LEAST SQUARES
+
+18
+
+Thus we have a new least squares equation with all residuals having "removed" x1 from all other regressors and the outcome. Then we can repeat this process again holding 3, . . . , p fixed and obtain
+(5.4)  ||e{e(y, x1), e(x2, x1)} - e{e(x3, x1), e(x2, x1)}3, . . . , e{e(xp, x1), e(x2, x1)}p||2.
+This could then be iterated to the pth regressor. Moreover, because we know the same inequalities will be obtained no matter what order we get to the pth regressor we can conclude that the order of taking residuals doesn't matter. Furthermore, picking the pth coefficient was arbitrary as well, so the same conclusion applies to all regressors: the least squares estimate for all coefficients can be obtained by iteratively taking residuals with all of the other regressors (in any order).
+This is interesting for many reasons. First, it is interesting to note that one need only regression through the origin to develop full multivariable regression. Secondly it helps us interpret our regression coefficients and how they are "adjusted" for the other variables.
+There was nothing in particular about using vectors. If X = [X1X2], two submatrices of size p1 and p2, and  = (1t 2t )t consider minimizing
+||y - X11 - X22||2.
+If 2 were held fixed, this would be maximized at
+1(2) = (Xt1X1)-1X12(y - X22).
+Plugging that back in we obtain a smaller quantity
+||{I - (Xt1X1)-1X21}y - {I - (X1t X1)-1X21}X22||2
+This is equivalent to the residual of y having regressed out X1 and the residual matrix of X2 having regressed X1 out of every column. Thus out 2 estimate will be the regression matrix of these residuals. Again, this explains why 2's estimate has been adjusted for X1, both the outcome and the X2 predictors have been orthogonalized to the space spanned by the columns of X1!
+
+5.6.1 Coding example
+Watch this video before beginning.
+
+> y = swiss$Fertility
+
+> x = as.matrix(swiss[,-1])
+
+> x1 = x[,1 : 3]
+
+> x2 = x[,4 : 6]
+
+> solve(t(x) %*% x, t(x) %*% y)
+
+[,1]
+
+1
+
+66.9151817
+
+Agriculture
+
+-0.1721140
+
+CHAPTER 5. LEAST SQUARES
+
+19
+
+Examination
+
+-0.2580082
+
+Education
+
+-0.8709401
+
+Catholic
+
+0.1041153
+
+Infant.Mortality 1.0770481
+
+> ey = y - x1 %*% solve(t(x1) %*% x1, t(x1) %*% y)
+
+> ex2 = x2 - x1 %*% solve(t(x1) %*% x1) %*% t(x1) %*% x2
+
+> solve(t(ex2) %*% ex2, t(ex2) %*% ey)
+
+[,1]
+
+Education
+
+-0.8709401
+
+Catholic
+
+0.1041153
+
+Infant.Mortality 1.0770481
+
+Chapter 6 Conceptual examples of least squares
+
+6.1 Mean only regression
+Watch this video before beginning. If our design matrix is X = 1n, we see that our coefficient estimate is: (1tn1n)-11ny = y¯.
+
+6.2 Regression through the origin
+
+If our design matrix is X = x, we see that our coefficient is
+
+(xtx)-1xty =
+
+y, x ||x||2 .
+
+6.3 Linear regression
+Section 5.3 of the last chapter showed that multivariable least squares was the direct extension of linear regression (and hence reduces to it).
+
+6.4 ANOVA
+Watch this video before beginning.
+
+20
+
+CHAPTER 6. CONCEPTUAL EXAMPLES OF LEAST SQUARES
+
+21
+
+Let y = [y11, . . . yJK] and our design matrix look like
+
+ 1 0 ... 0 
+
+ 1 0 ... 0 
+
+  
+
+...
+
+...
+
+...
+
+...
+
+  
+
+ 
+
+1
+
+0
+
+...
+
+0
+
+ 
+
+ 
+
+0
+
+1
+
+...
+
+0
+
+ 
+
+ X=
+
+...
+
+
+
+...
+
+...
+
+...
+
+
+
+ 
+
+=
+
+IK
+
+
+
+1n,
+
+ 0 1 ... 0 
+
+
+
+
+
+ 
+
+...
+
+...
+
+...
+
+...
+
+ 
+
+
+
+
+
+ 0 0 ... 1 
+
+  
+
+...
+
+...
+
+...
+
+...
+
+  
+
+0 0 ... 1
+
+where  is the Kronecker product. That is, our y arises out of J groups where there is K measurements per group. Let y¯j be the mean of the y measurements in group j. Then
+
+
+
+K y¯1
+
+Xty =  
+
+...
+
+, 
+
+K y¯J
+
+Note also that XtX = kI. Therefore, (XtX)-1Xty = (y¯1 . . . , y¯J )t. Thus, if our design matrix parcels y into groups, the coefficients are the group means.
+Some completing thoughts on ANOVA.
+
+6.5 ANCOVA
+
+Watch this video before beginning. Consider now an instance where
+
+ 1 0 x11 
+
+ 1 0 x12 
+
+ 
+
+...
+
+...
+
+...
+
+ 
+
+
+
+
+
+X
+
+=
+
+  
+
+1 0
+
+
+
+0 1
+
+x1n x21
+
+
+
+ 
+
+=
+
+[I2
+
+
+
+1n
+
+
+
+x].
+
+0 
+
+1
+
+x22
+
+ 
+
+ 
+
+...
+
+...
+
+ ... 
+
+0 1 x2n
+
+That is we want to project y onto the space spanned by two groups and a regression variable. This is effectively fitting two parallel lines to the data. Let  = (µ1 µ2 )t = (µt )t. Denote the outcome vector, y, as comprised of yij for i = 1, 2 and j = 1, . . . , n stacked in the relevant order. Imagine holding  fixed.
+
+||y - X||2 = ||y - x - (I2  1n)µ||2
+
+(6.1)
+
+CHAPTER 6. CONCEPTUAL EXAMPLES OF LEAST SQUARES
+
+22
+
+Then we are in the case of the previous section and the best estimate of µ are the group
+
+means
+
+1 n
+
+(I2
+
+ 1n)t(y
+
+-
+
+x)
+
+=
+
+(y¯1
+
+y¯2)t
+
+-
+
+(x¯1
+
+x¯2)t
+
+where
+
+y¯i
+
+and
+
+x¯i
+
+are
+
+the
+
+group
+
+means
+
+of
+
+y and x respectively. Then we have that (6.1) satisfies:
+
+(6.1)  ||y - x - (I2  1n){(y¯1 y¯2)t - (x¯1 x¯2)t}||2 = ||y~ - x~||2
+
+where y~ and x~ are the group centered versions of y and x. (That is y~ij = yij - y¯i, for example.) This is now regression through the origin yielding the solution
+
+^ =
+
+ij(yij - y¯i)(xij - ij(xij - x¯i)2
+
+x¯i)
+
+=
+
+p^1
+
++ (1
+
+-
+
+p)^2
+
+where
+
+p=
+
+j(x1j - x¯1)2 ij(xij - x¯i)2
+
+and
+
+^i =
+
+j (yij
+
+-
+
+y¯i)(xij
+
+-
+
+x¯i) .
+
+j(xij - x¯i)2
+
+That is, the estimated slope is a convex combination of the group-specific slopes weighted by the variability in the x's in the group. Furthermore, µ^i = y¯i - x¯i^ and thus
+
+µ^1 - µ^2 = (y¯1 - y¯2) - (x¯1 - x¯2)^.
+
+The ANCOVA model is extremely useful for visualizing adjustment in regression. See the video here for some examples.
+
+Chapter 7 Bases
+
+Recall that any set of linearly independent vectors forms a basis, specifically for the space spanned by linear combinations. Therefore, least squares is projecting our data into the space created by the basis defined by the columns of our design matrix. Of note, certain bases are of particular importance as the spaces that they create are contextually meaningful for many scientific problems. The most notable example are Fourier bases. In this case, we project our data into the space spanned by harmonic functions. In problem where the study of periodicities is of interest, this is of tremendous use.
+
+7.1 Introduction to full rank bases
+
+Watch this video before beginning. When our X matrix is n×n of rank n, then the least squares fitted values X(XtX)-1Xty =
+X = y^ is simply a linear reorganization of y as it's projecting it from Rn to Rn. Despite not summarizing y in any meaningful way, this is often a very meaningful thing to do, particularly when the basis is orthonormal. This full rank linear transformation of y is simply called a "transform". Notable bases then get named as their name then "transform". The best examples include the Fourier transform and the Wavelet transform. Often, because we're applying the transform to vectors with discrete indices, rather than continuous functions, the label "discrete" is affixed, such as the discrete Fourier transform. Looking back to our Hilbert space discussion from earlier the extension to continuous spaces is conceptually straightforward.
+Let X = [x1 . . . xn] be our basis so that XtX = I. In this case note that
+
+
+
+
+
+x1, y
+
+^ = Xty =  
+
+...
+
+. 
+
+xn, y
+
+Thus, our coefficients are exactly the inner products of the basis elements (columns of X) and the outcome. Our fitted values are
+n
+y^ = X^ = xi xi, y .
+i=1
+
+23
+
+CHAPTER 7. BASES
+
+24
+
+Consider deleting columns from X, say
+
+W = [xi1 . . . xip] and minimizing ||y - W||2. Since W is also orthonormal (but not full rank) we get that
+
+p
+^ = xij , y
+j=1
+
+p
+
+p
+
+and y^ = xij xij , y . = xij ij .
+
+j=1
+
+j=1
+
+That is, the coefficients from the model with columns removed are identical to the coefficients from the full model. Transforms are often then accomplished by getting the full transform and using a subset of the coefficients to get the fitted values.
+Watch this discussion of different kinds of bases.
+
+7.2 Principal component bases
+
+Watch this video before beginning.
+One orthonormal basis is always at our disposal, the principal component basis. Consider the case where X has p > n columns of full row rank. Let X = UDVt be the singular value decomposition of X so that U is n × n, so that, UtU = I and Vt is n × p so that VtV = I and D is diagonal containing n singular values. The matrix U is a full rank
+version of the column space of X. Notice that minimizing
+
+||y - X||2
+
+has n equations and p > n unknowns and that
+
+||y - X||2 = ||y - UDVt||2
+
+So that by defining  = DVt and minimizing
+
+||y - U||2.
+
+we have a full rank design matrix created out of the columns of X since U = XVD-1. The fitted values are merely Uty.
+Note, if X has been centered, then
+
+1 XtX = 1 VD2Vt
+
+n-1
+
+n-1
+
+is the covariance matrix between the columns of X. Furthermore, notice that the total variability represented by the trace of the covariance matrix is,
+
+1 tr(XtX) = 1 tr(VD2Vt) = 1 tr(D2VtV) = 1 tr(D2)
+
+n-1
+
+n-1
+
+n-1
+
+n-1
+
+The sum of the squared singular values equals the total variability in the design matrix. The singular vectors and values are typically ordered in the terms of decreasing variability.
+
+CHAPTER 7. BASES
+
+25
+
+Therefore, keeping only a few of them represents a dimension reduction that preserves the greatest amount of variability.
+Thus, we once one calculates UtY we have all possible submodel fits of the columns of U, where U is an meaningful summary of X. Typically one takes a few of the first columns of U so that the related eigenvalues explain a large proportion of the total variability. We haven't discussed an intercept. However, one usually mean centers Y and X first.
+
+7.2.1 Coding example
+Watch this video before beginning. The following code goes through calculation of SVD and eigenvalue decompositions.
+data(swiss) y = swiss$Fertility x = as.matrix(swiss[,-1]) n = nrow(x) decomp = princomp(x, cor = TRUE) plot(cumsum(decomp$sdev^2) / sum(decomp$sdev^2), type = "l") decomp2 = eigen(cor(x)) xnorm = apply(x, 2, function(z) (z - mean(z)) / sd(z)) decomp3 = svd(xnorm) round(rbind(decomp2$vectors, decomp$loadings, decomp3$v),3) round(rbind(decomp2$values, decomp$sdev^2, decomp3$d ^ 2 / (n - 1)), 3) plot(decomp3$u[,1], decomp$scores[,1]) plot(decomp3$u[,1], xnorm %*% decomp2$vectors %*% diag(1 / sqrt(decomp2$values))[,1])
+
+Chapter 8
+Residuals and variability
+8.1 Residuals
+Watch this video before beginning. The residuals are the variability left unexplained by the projection onto the linear space
+spanned by the design matrix. The residuals are othogonal to the space spanned by the design matrix and thus are othogonal to the design matrix itself.
+We define the residuals as e = y - y^.
+Thus, our least squares solution can be though of as minimizing the squared norm of the residuals. Notice further that by expanding the column space of X by adding any new linearly indpendent variables, the normal of the residuals must decrease. In other words, if we add any non-redundant regressors, we necessarily remove residual variability. Furthermore, as we already know, X is of full column rank, then our residuals are all zero, since y = y^.
+Notice that the residuals are equal to:
+e = y - y^ = y - X(XtX)-1Xty = {I - X(XtX)-1Xt}y.
+Thus multiplication by the matrix I - X(XtX)-1Xt transforms a vector to the residual. This matrix is interesting for several reasons. First, note that {I - X(XtX)-1Xt}X = 0 thus making the residuals orthogonal to any vector, X, in the space spanned by the columns of X. Secondly, it is both symmetric and idempotent.
+A consequence of the orthogonality is that if an intercept is included in the model, the residuals sum to 0. Specifically, since the residuals are orthogonal to any column of X, et1 = 0.
+8.2 Partitioning variability
+Watch this video before beginning.
+26
+
+CHAPTER 8. RESIDUALS AND VARIABILITY
+
+27
+
+For convenience, define HX = X(XtX)-1Xt. Note that the variability in a vector y is
+
+estimated by
+
+n
+
+1 -
+
+1
+
+yt(I
+
+-
+
+H1)y.
+
+Omitting the n - 1 term define the total sums of squares as
+
+SST ot = ||y - y¯1||2 = yt(I - H1)y.
+
+This is an unscaled measure of the total variability in the sample. Given a design matrix, X, define the residual sums of squares as
+
+SSRes = ||y - y^||2 = yt(I - HX)y
+
+and the regression sums of squares as
+
+SSReg = ||Y¯ 1 - y^||2 = yt(HX - H1)y.
+
+The latter equality is obtained by the following. First note that since (I - HX)1 = 0 (since X contains an intercept) we have that HX1 = 1 and then HXH1 = H1 and H1 = H1HX. Also, note that HX is symmetric and idempotent. Now we can perform the following manipulation
+
+||Y¯ 1 - y^||2 = yt(HX - H1)t(HX - H1)y = yt(HX - H1)(HX - H1)y = yt(HX - H1HX - HXH1 + H1)y = yt(HX - H1)y.
+
+Using this identity we can now show that
+
+SST ot = yt(I - H1)y = yt(I - HX + HX - H1)y = yt(I - HX)y + yt(HX - H1)y
+= SSRes + SSReg
+
+Thus our total sum of squares partitions into the residual and regression sums of squares.
+
+We define
+
+R2 = SSReg . SST ot
+
+as the percentage of our total variability explained by our model. Via our equality above,
+
+this is guaranteed to be between 0 and 1.
+
+Chapter 9 Expectations
+
+Up to this point, our exploration of linear models only relied on least squares and projections. We begin now discussing the statistical properties of our estimators. We start by defining expected values. We assume that the reader has basic univariate mathematical statistics.
+
+9.1 Expected values
+
+Watch this video before beginning. If X is a random variable having density funciton f , the kth moment is defined as
+
+
+E[X] = xkf (x)dx.
+-
+
+In the multivariate case where X is a random vector then the kth moment of element i of the vector is given by
+
+
+
+
+
+E[Xik] =
+
+...
+
+xki f (x1, . . . , xn)dx1, . . . , dxn.
+
+-
+
+-
+
+It is worth asking if this definition is consistent with all of the subdistributions defined by
+the subvectors of X. Let i1, . . . , ip is any subset of indices of 1, . . . , n and ip+1, . . . , in are the remaining, then the joint distribution of (Xi1, . . . , Xip)t is
+
+
+
+
+
+g(xi1, . . . , xip) =
+
+...
+
+f (x1, . . . , xn)dxip+1, . . . , dxin.
+
+-
+
+-
+
+The kth moment of Xij for j  {1, . . . , p} is equivalently:
+
+E[Xij ] = =
+
+
+...
+- 
+...
+-
+
+
+xikj g(xi1, . . . , xip)dxi1, . . . , dxip
+-
+
+xkij f (x1, . . . , xn)dx1, . . . , dxn.
+-
+
+28
+
+CHAPTER 9. EXPECTATIONS
+
+29
+
+(HW, prove this.) Thus, if we know only the marginal distribution of Xij or any level of joint information, the expected value is the same.
+If X is any random vector or matrix, the E[X] is simply the elementwise expected value defined above. Often we will write E[X] = µ, or some other Greek letter, adopting the notation that population parameters are Greek. Standard notation is hindered somewhat in that uppercase letters are typically used for random values, though are also used for matrices. We hope that the context will eliminate confusion.
+Watch this video before beginning. Expected value rules translate well in the multivariate settings. If A, B, C are vectors or matrices that satisfy the operations then
+E[AX + BY + C] = AE[X] + BE[Y] + C.
+Further, expected values commute with transposes and traces
+E[Xt] = E[X]t
+and E[tr(X)] = tr(E[X]).
+
+9.2 Variance
+Watch this video before beginning. The multivariate variance of random vector X is defined as
+Var(X) =  = E[(X - µ)(X - µ)t].
+Direct use of our matrix rules for expected values gives us the analog of the univariate shortcut formula
+ = E[XXt] - µµt. Variance satisfy the properties
+Var(AX + B) = AVar(X)At.
+
+9.3 Multivariate covariances
+Watch this video before beginning. The multivariate covariance is given by Cov(X, Y) = E[(X - µx)(Y - µy)t] = E[XYt] - µxµty.
+This definition applies even if X and Y are of different length. Notice the multivariate covariance is not symmetric in its arguments. Moreover,
+Cov(X, X) = Var(X).
+
+CHAPTER 9. EXPECTATIONS
+
+30
+
+Covariances satisfy some useful rules in that Cov(AX, BY) = ACov(X, Y)Bt
+and Cov(X + Y, Z) = Cov(X, Y) + Cov(X, Z)
+Multivariate covariances are useful for sums of random vectors.
+Var(X + Y) = Var(X) + Var(Y) + Cov(X, Y) + Cov(Y, X).
+A nifty fact from covariances is that the covariance of AX and BX is ABt. Thus AX and BX are uncorrelated iff ABt = 0.
+
+9.4 Quadratic form moments
+Watch this video before beginning. Let X be from a distribution with mean µ and variance . Then
+E[XtAX] = µtAµ + tr(A).
+Proof
+E[XtAX] = E[tr(XtAX)] = E[tr(AXXt)] = tr(E[AXXt]) = tr(AE[XXt]) = tr{A[Var(X) + µµt]} = tr{A + Aµµt} = tr(A) + tr(Aµµt) = tr(A) + tr(µtAµ) = tr(A) + µtAµ
+
+9.5 BLUE
+Watch this video before beginning. Now that we have moments, we can discuss mean and variance properties of the least
+squares estimators. Particularly, note that if Y satisfies E[Y] = X and Var(Y ) = 2I then, ^ satisfies:
+E[^ ] = (XtX)-1XtE[Y] = (XtX)-1XtX = . Thus, under these conditions ^ is unbiased. In addition, we have that
+Var(^ ) = Var{(XtX)-1XtY} = (XtX)-1XtVar(Y)X(XtX)-1 = (XtX)-12.
+
+CHAPTER 9. EXPECTATIONS
+
+31
+
+We can extend these results to linear contrasts of  to say that qt^ is the best estimator of qt in the sense of minimizing the variance among linear (in Y) unbiased estimators. It is important to consider unbiased estimators, since we could always minimize the variance by defining an estimator to be constant (hence variance 0). If one removes the restriction of unbiasedness, then minimum variance cannot be the definition of "best". Often one then looks to mean squared error, the squared bias plust the variance, instead. In what follows we only consider linear unbiased estimators.
+We give Best Linear Unbiased Estimators the acronym BLUE. It is remarkable easy to prove the result.
+Consider estimating qt. Clearly, qt^ is both unbiased and linear in Y. Also note that Var(qt^ ) = qt(XtX)-1q2. Let ktY be another linear unbiased estimator, so that E[ktY] = qt. But, E[ktY] = ktX. It follows that since qt = ktX must hold for all possible , we have that ktX = qt. Finally note that
+Cov(qt^ , ktY) = qt(XtX)-1Xtkt2.
+Since ktX = qt, we have that
+Cov(qt^ , ktY) = Var(qt).
+Now we can execute the proof easily.
+Var(qt^ - ktY) = Var(qt^ ) + Var(ktY) - 2Cov(qt^ , ktY) = Var(ktY) - Var(qt^ )  0.
+Here the final inequality arises as variances have to be non-negative. Then we have that Var(ktY)  Var(qt^ ) proving the result.
+Notice, normality was not required at any point in the proof, only restrictions on the first two moments. In what follows, we'll see the consequences of assuming normality.
+
+Chapter 10 The normal distribution
+
+Watch this before beginning.
+
+10.1 The univariate normal distribution
+
+Z follows a standard normal distribution if its density is
+
+(z) = 1 exp(-z2/2). 2
+
+We write the associated distribution function as . A standard normal variate has mean 0
+
+and variance 1. All odd numbered moments are 0. The non-standard normal variate, say
+
+X, having mean µ and standard deviation  can be obtained as X = µ + Z. Conversely,
+
+(X - µ)/ is standard normal if X is any non-standard normal. The non-standard normal
+
+density is:
+
+x-µ
+
+
+
+/
+
+
+
+with distribution function 
+
+x-µ 
+
+.
+
+10.2 The multivariate normal distribution
+The multivariate standard normal distribution for a random vector Z has density given by:
+(2)-n/2 exp(-||Z||2/2).
+Z has mean 0 and variance I. Non standard normal variates, say X, can be obtained as X = µ + 1/2Z where E[X] = µ and Var(X) = 1/21/2 =  (assumed to be positive definite). Conversely, one can go backwards with Z = -1/2(X - µ). The non-standard multivariate normal distribution is given by
+(2)-n/2||-1/2 exp - 1 (X - µ)t-1(X - µ) . 2
+32
+
+CHAPTER 10. THE NORMAL DISTRIBUTION
+
+33
+
+Commit this density to memory. The normal distribution is nice to work with in that all full row rank linear transformations
+of the normal are also normal. That is, if a + AX is normal if A is full row rank. Also, all conditional and submarginal distributions of the multivariate normal are also normal. (We'll discuss the conditional distribution more later.)
+
+10.3 Singular normal
+
+Watch this video before beginning.
+
+What happens if the A in the paragraph above is not of full row rank? Then Var(X) =
+
+AAt is not full rank. There are redundant elements of the vector X in that if you know
+
+some of them, you know the remainder. An example is our residuals. The matrix (I -
+
+X(XtX)-1Xt) is not of full rank (it's rank is n - p). For example, if we include an intercept,
+
+the residuals must sum to 0. Know any n - 1 of them and you know the nth. A contingency
+
+for this is to define the singular normal distribution. A singular normal random variable is
+
+any random variable that can be written as AZ + b for a matrix A and vector b and
+
+standard normal vector Z.
+
+As an example, consider the case where Y  N (X, 2I). Then the residuals, defined
+
+as
+
+{I
+
+-
+
+X(XtX)-1Xt}Y
+
+=
+
+{I
+
+-
+
+X(XtX)-1Xt}(X
+
++
+
+1 
+
+Z)
+
+are
+
+a
+
+linear
+
+transformation
+
+of
+
+iid
+
+normals. Thus the residuals are singular normal.
+
+The singular normal is such that all linear combinations and all submarginal and con-
+
+ditional distributions are also singular normal (prove this using the definition above!). The
+
+singular normal doesn't necessarily have a density function, because of the possibility of
+
+redundant entries. For example, the vector (Z Z), where Z is a standard normal, doesn't
+
+have a joint density since the covariance matrix is 12×2, which isn't invertible. In our treatment, the multivariate normal is the special case of the singular normal
+
+where the covariance matrix is full rank. In other treatments of linear models, the defini-
+
+tion of the multivariate normal allows for the possibility of rank deficient covariance matri-
+
+ces. However, personally, I think the distinction is useful, so reserve the term multivariate
+
+normal for the full rank case.
+
+10.4 Normal likelihood
+Watch this video before beginning. Let Y  N (X, 2I) then note that minus twice the log-likelihood is:
+n log(2) + ||Y - X||2/22
+Holding 2 fixed we see that minmizing minus twice the log likelihood (thus maximizing the likelihood) yields the least squares solution:
+^ = (XtX)-1Xty.
+
+CHAPTER 10. THE NORMAL DISTRIBUTION
+
+34
+
+Since this doesn't depend on  it is the MLE. Taking derivatives and setting equal to zero we see that
+^2 = ||e||2/n
+(i.e. the average of the squared residuals). We'll find that there's a potentially preferable unbiased estimate given by
+S2 = ||e||2/(n - p).
+This model can be written in a likelihood equivalent fashion of
+
+Y = X +
+
+where  N (0, 2I). However, one must be careful with specifying linear models this way. For example, if one wants to simulate Y = X + Z where X and Z are generated independently, one can not equivalently simulate X by generating Y and Z independently and taking Z - Y . (Note Y and Z are correlated in the original simulation specification.) Writing out the distributions explicitly removes all doubt. Thus the linear notation, especially when there are random effects, is sort of lazy and imprecise (though everyone, your author included, uses it).
+Let's consider another case, suppose that Y1, . . . , Yn are iid p vectors N (µ, ). Then, disregarding constants, minus twice the log likelihood is
+
+n
+n log || + (Yi - µ)t-1(Yi - µ).
+i=1
+
+Assume that  is known, then using our derivative rules from earlier, we can minimize
+
+this to obtain the MLE for µ
+
+µ^ = Y¯
+
+and the following for 
+
+^ = 1 n
+
+n
+(Yi - Y¯ )(Yi - Y¯ )t
+
+i=1
+
+Consider yet another case Y  N (X, ) with known .
+likelihood is: log || + (Y - X)t-1(y - X).
+
+Minus twice the log-
+
+Using our matrix rules we find that
+
+^ = (Xt-1X)-1Xt-1y.
+
+This is the so-called weighted least squares estimate.
+
+10.5 Conditional distributions
+Watch this video before beginning.
+
+CHAPTER 10. THE NORMAL DISTRIBUTION
+
+35
+
+The conditional distribution of a normal is of interest. Let X = [Xt1 Xt2]t be comprised
+
+of an n1 × 1 and n2 × 1 matrix where n1 + n2 = n. Assume that X  N (µ, ) where
+
+µ = [µt1 µ2t ] and
+
+11 12 t12 22
+
+.
+
+Consider now the conditional distribution of X1 | X2. A clever way to derive this (shown to me by a student in my class) is as follows let Z = X1 + AX2 where A = -122-21. Then note that the covariance between X2 and Z is zero (HW).
+Thus the distribution of Z | X2 is equal to the distribution of Z and that it is normally
+distributed being a linear transformation of normal variates. Thus we know both
+
+E[Z | X2 = x2] = E[X1 | X2 = x2] + AE[X2 | X2 = x2] = E[X1 | X2 = x2] + Ax2
+and E[Z | X2 = x2] = E[Z] = µ1 + Aµ2.
+Setting these equal we get that E[X1 | X2] = µ1 + 122-21(x2 - µ2).
+As a homework, using the same technique to derive the conditional variance Var(Z | X2 = x2) = 11 - 122-21t12.
+
+10.5.1 Important example
+Consider an example. Consider the vector (Y Xt)t where Y is 1 × 1 and X is p × 1. Assume that the vector is normal with E[Y] = µy, E[X] = µx and the variances as y2 (1 × 1) and x (p × p) and covariance xy (p × 1).
+Consider now predicting Y given X = x. Clearly the a good estimate for this would be E[Y | X = x]. Our results suggest that Y | X = x is normal with mean:
+µy + xt y-x 1(x - µx) = µy - µx-x 1xy + xtx-1xy = 0 + xt
+where 0 = µy - µx-x 1xy and  = x-1xy. That is, the conditional mean in this case mirrors the linear model. The slope is defined exactly as the inverse of the variance/covariance matrix of the predictors times the cross correlations between the predictors and the response. We discussed the empirical version of this in Section 5.3 where we saw that the empirical coefficients are the inverse of the empirical variance of the predictors times the empirical correlations between the predictors and response. A similar mirroring occurs for the intercept as well.
+This correspondence simply says that empirical linear model estimates mirror the population parameters if both the predictors and response are jointly normal. It also yields a motivation for the linear model in some cases where the joint normality of the predictor and response is conceptually reasonable. Though we note that often such joint normality is not reasonable, such as when the predictors are binary, even though the linear model remains well justified.
+
+CHAPTER 10. THE NORMAL DISTRIBUTION
+
+36
+
+10.5.2 Gaussian graphical models
+
+Consider our partitioned variance matrix.
+
+=
+
+11 12 12t 22
+
+.
+
+The upper diagonal element of -1 is given by the inverse of 11 - 12-221t12. Recall that 11 - 122-211t 2 = Var(X1 | X2). Suppose that X1 = (X11 X12)t. Then this result suggests that X11 is independent of X12 given X2 if the (1, 2) off diagonal element of -1 is zero. (Recall that independence and absence of correlation are equivalent in the mul-
+tivariate normal.) There's nothing in particular about the first two positions, so we arrive at the following remarkable fact: whether or not the off diagonal elements of -1 are zero
+determines the conditional independence of those random variables given the remain-
+der. This forms the basis of so-called Gaussian graphical models. The graph defined by ascertaining which elements of -1 are zero is called a conditional independence graph.
+
+10.5.3 Bayes calculations
+We assume a slight familiarity of Bayesian calculations and inference for this section. In a Bayesian analysis, one multiplies the likelihood times a prior distribution on the parameters to obtain a posterior. The posterior distribution is then used for inference. Let's go through a simple example. Suppose that y | µ  N (µ1n, 2I) and µ | N (µ0,  2) where y is n × 1 and µ is a scalar. The normal distribution placed on µ is called the "prior" and µ0 and  2 are assumed to be known. For this example, let's assume that 2 is also known. The goal is to calculate µ | y, the posterior distribution. This is done by multiplying prior times likelihood. Symbolically,
+
+f (Param|Data) = f (Param, Data)  f (Data|Param)f (Param) = Likelihood × Prior. f (Data)
+Here, the proportional symbol, , is with respect to the parameter. Consider our problem, retaining only terms involving µ we have that minus twice the
+natural log of the distribution of µ | y is given by
+
+-2 log(f (y | µ)) - 2 log(f (µ))
+
+= ||y - µ1n||2/2 + (µ - µ0)2/ 2 = -2µny¯/2 + µ2n/2 + µ2/ 2 - 2µµ0/ 2
+
+= -2µ
+
+y¯ 2/n
+
++
+
+µ0 2
+
++ µ2
+
+11 2/n +  2
+
+This is recognized as minus twice the log density of a normal distribution for µ with vari-
+
+ance of
+
+1
+
+1 -1
+
+ 22/n
+
+Var(µ | y) =
+
++
+
+=
+
+2/n  2
+
+2/n +  2
+
+CHAPTER 10. THE NORMAL DISTRIBUTION
+
+37
+
+and mean of
+
+E[µ | y] =
+
+1
+
+1 -1
+
++
+
+y¯ + µ0
+
+2/n  2
+
+2/n  2
+
+= py¯ + (1 - p)µ0
+
+where
+
+2
+
+p=
+
+.
+
+ 2 + 2/n
+
+Thus E[µ | y] is a mixture of the empirical mean and the prior mean. How much the means are weighted depends on the ratio of the variance of the mean (2/n) and the prior variance ( 2). As we collect more data (n  ), or if the data is not noisy (  0) or we have a lot of prior uncertainty (  ) the empirical mean dominates. In contrast as we become more certain a priori (  0) the prior mean dominates.
+
+Chapter 11 Distributional results
+
+In this chapter we assume that Y  N (X, 2I). This is the standard normal linear model. We saw in the previous chapter that the maximum likelihood estimate for
+
+11.1 Quadratic forms
+
+Watch this video before beginning.
+Let A be a symmetric matrix (not necessarily full rank) and let X  N (µ, ). Then (X - µ)tA(X - µ)  p2 if A is idempotent and p = Rank(A).
+As an example, note that (X - µ)t-1(X - µ) is clearly Chi-squared(n). This is most easily seen by the fact that -1/2(X - µ) = Z is a vector of iid standard normals and thus the quadratic form is the sum of their squares. Using our result, A = -1 in this case and A = I, which is idempotent. The rank of -1 is n.
+Let's prove our result. Let A = VD2Vt where D is diagonal (with p non zero entries) and VVt = I. The assumption of idempotency gives us that AA = A. Plugging
+in our decomposition for A and using the orthonormality of the columns of V we get that DVtVD = I. Then note that
+
+(X - µ)tA(X - µ) = (X - µ)tVDDVt(X - µ).
+
+(11.1)
+
+But DVt(X - µ)  N (0, DVtVD), which has variance equal to I. Thus in Equation (11.1) we have the sum of p squared iid standard normals and is thus Chi-squared p.
+
+11.2 Statistical properties
+For homework, show that ^ is normally distributed with moments: E[^ ] =  and Var(^ ) = (XtX)-12.
+
+38
+
+CHAPTER 11. DISTRIBUTIONAL RESULTS
+
+39
+
+The
+
+residual
+
+variance
+
+estimate
+
+is
+
+S2
+
+=
+
+1 n-p
+
+ete.
+
+Using
+
+Section
+
+9.4
+
+we
+
+see
+
+that
+
+it
+
+is
+
+unbi-
+
+ased, E[S2] = 2. Note also that:
+
+n - p S2 = 1 yt(I - X(XtX)-1Xt)y
+
+2
+
+2
+
+= 1 (y - X)t{I - X(XtX)-1Xt}(y - X) 2
+
+is a quadratic form of as discussed in Section (11.1). Furthermore
+
+1 2
+
+{I
+
+-
+
+X(XtX)-1Xt}Var(Y
+
+)
+
+=
+
+{I
+
+-
+
+X(XtX)-1Xt},
+
+which is idempotent. For symmetric idempotent matrices, the rank equals the trace; the latter of which is easily calculated as
+
+tr{I - X(XtX)-1Xt} = tr{I} - tr{X(XtX)-1Xt} = n - tr{(XtX)-1XtX} = n - p.
+
+Thus,
+
+n-p 2
+
+S
+
+2
+
+is
+
+Chi-squared
+
+n-
+
+p.
+
+The
+
+special
+
+case
+
+of
+
+this
+
+where
+
+X
+
+has
+
+only
+
+an
+
+intercept
+
+yields the usual empirical variance estimate.
+
+11.2.1 Confidence interval for the variance
+
+We can use the Chi-squared result to develop a confidence interval for the variance. Let n2-p, be the  quantile from the chi squared distribution with n - p degrees of freedom. Then inverting the probability statement
+
+1-=P
+
+n2 -p,/2
+
+
+
+ee n-p
+
+
+
+n2 -p,1-2
+
+11.3 T statistics
+
+Watch this video before beginning. We can now develop T statistics. Consider the linear contrast ^ tt. First note that ^ tt is
+N (tt, tt(XtX)-1t2). Furthermore, Cov(^ , e) = Cov((XtX)-1XtY, {I-X(XtX)-1Xt}Y) =
+0 since (XtX)-1Xt{I - X(XtX)-1Xt} = 0. Thus the residuals and estimated coefficients are independent, implying that ^ tt and S2 are independent. Therefore,
+
+^ t - t / n - p S2/(n - p) =
+
+^ t - t
+
+tt(XtX)-1t2
+
+2
+
+tt(XtX)-1tS2
+
+is a standard normal divided by the square root of an independent Chi-squared over its degrees of freedom, thus is T distributed with n - p degrees of freedom.
+
+CHAPTER 11. DISTRIBUTIONAL RESULTS
+
+40
+
+11.4 F tests
+
+Watch this video before beginning. Consider testing the hypothesis that H0 : K = 0 versus not equal for K of full row
+rank (say v). Notice that K^  N (K, K(XtX)-1Kt20 and thus
+(K^ - K)t{K(XtX)-1Kt2}-1(K^ - K)
+is Chi-squared with v degrees of freedom. Furthermore, it is independent of e being a function of ^ . Thus:
+(K^ - K)t{K(XtX)-1Kt}-1(K^ - K)/vS2
+forms the ratio of two independent Chi-squared random variables over their degrees of freedom, which is an F distribution.
+
+11.5 Coding example
+
+Watch this video before beginning. Consider the swiss dataset. Let's first make sure that we can replicate the coefficient
+table obtained by R.
+
+> ## First let's see the coeficient table
+
+> fit = lm(Fertility ~ ., data = swiss)
+
+> round(summary(fit)$coef, 3)
+
+Estimate Std. Error t value Pr(>|t|)
+
+(Intercept)
+
+66.915 10.706 6.250 0.000
+
+Agriculture
+
+-0.172
+
+0.070 -2.448 0.019
+
+Examination
+
+-0.258
+
+0.254 -1.016 0.315
+
+Education
+
+-0.871
+
+0.183 -4.758 0.000
+
+Catholic
+
+0.104
+
+0.035 2.953 0.005
+
+Infant.Mortality 1.077
+
+0.382 2.822 0.007
+
+> # Now let's do it more manually
+
+> x = cbind(1, as.matrix(swiss[,-1]))
+
+> y = swiss$Fertility
+
+> beta = solve(t(x) %*% x, t(x) %*% y)
+
+> e = y - x %*% beta
+
+> n = nrow(x); p = ncol(x)
+
+> s = sqrt(sum(e^2) / (n - p))
+
+> #Compare with lm
+
+> c(s, summary(fit)$sigma)
+
+[1] 7.165369 7.165369
+
+> #calculate the t statistics
+
+> betaVar = solve(t(x) %*% x) * s ^ 2
+
+> ## Show that standard errors agree with lm
+
+CHAPTER 11. DISTRIBUTIONAL RESULTS
+
+41
+
+> cbind(summary(fit)$coef[,2], sqrt(diag(betaVar)))
+
+[,1]
+
+[,2]
+
+(Intercept)
+
+10.70603759 10.70603759
+
+Agriculture
+
+0.07030392 0.07030392
+
+Examination
+
+0.25387820 0.25387820
+
+Education
+
+0.18302860 0.18302860
+
+Catholic
+
+0.03525785 0.03525785
+
+Infant.Mortality 0.38171965 0.38171965
+
+> # Show that the tstats agree
+
+> tstat = beta / sqrt(diag(betaVar))
+
+> cbind(summary(fit)$coef[,3], tstat)
+
+[,1]
+
+[,2]
+
+(Intercept)
+
+6.250229 6.250229
+
+Agriculture
+
+-2.448142 -2.448142
+
+Examination
+
+-1.016268 -1.016268
+
+Education
+
+-4.758492 -4.758492
+
+Catholic
+
+2.952969 2.952969
+
+Infant.Mortality 2.821568 2.821568
+
+> # Show that the P-values agree
+
+> cbind(summary(fit)$coef[,4], 2 * pt(- abs(tstat), n - p)
+
+[,1]
+
+[,2]
+
+(Intercept)
+
+1.906051e-07 1.906051e-07
+
+Agriculture
+
+1.872715e-02 1.872715e-02
+
+Examination
+
+3.154617e-01 3.154617e-01
+
+Education
+
+2.430605e-05 2.430605e-05
+
+Catholic
+
+5.190079e-03 5.190079e-03
+
+Infant.Mortality 7.335715e-03 7.335715e-03
+
+> # Get the F statistic
+
+> # Set K to grab everything except the intercept
+
+> k = cbind(0, diag(rep(1, p - 1)))
+
+> kvar = k %*% solve(t(x) %*% x) %*% t(k)
+
+> fstat = t(k %*% beta) %*% solve(kvar) %*% (k %*% beta) / (p - 1) / s ^ 2
+
+> #Show that it's equal to what lm is giving
+
+> cbind(summary(fit)$fstat, fstat)
+
+> #Calculate the p-value
+
+> pf(fstat, p - 1, n - p, lower.tail = FALSE)
+
+[,1]
+
+[1,] 5.593799e-10
+
+> summary(fit)
+
+## ... only showing the one relevant line ...
+
+F-statistic: 19.76 on 5 and 41 DF, p-value: 5.594e-10
+
+CHAPTER 11. DISTRIBUTIONAL RESULTS
+
+42
+
+11.6 Prediction intervals
+
+It's worth discussing prediction intervals. The obvious prediction at a new set of covariates, x0, is xt0^ . This is then just a linear contrast of the  and so the interval would be
+x0t ^ ± tn-p,1-/2s x0t (XtX)-1x0.
+If you've taken an introductory regression class, you it will have noted the difference between a prediction interval and a confidence interval for a mean at a new value of x. For a prediction interval, we want to estimate a range of possible values for y at that value of x, a different statement than trying to estimate the average value of y at that value of x. As we collect infinite data, we should get the average value exactly. However, predicting a new value involves intrinsic variability that can't go away no matter how much data we use to build our model.
+As an example, imagine the difference between the following two tasks: guess the sale price of a diamond given its weight versus guess the average sale price of diamonds given a particular weight. With enough data, we should get the average sale price exactly. However, we still won't know exactly what the sale price of a diamond would be.
+To account for this, we develop prediction intervals. These are not confidence intervals, because they are trying to estimate something random, not a fixed parameter. Consider estimating Y0 at x value x0. Note that
+Var(Y0 - xt0^ ) = (1 + x0t (XtX)-1x0)2
+
+For homework, show that
+
+Y0t - xt0^ s 1 + xt0(XtX)-1x02
+
+follows a T distribution with n - p degrees of freedom. Finish, by showing that
+
+P {y0  [xt0^ ± tn-p,1-/2s 1 + xt0(XtX)-1x0]} = 1 - .
+
+This is called a prediction interval. Notice the variability under consideration contains xt0(XtX)-1x0, which goes to 0 as we get more X variability and 1, which represents the intrinsic part of the variability that doesn't go away as we collect more data.
+
+11.6.1 Coding example
+Let's try to predict a car's MPG from other characteristics.
+> fit = lm(mpg ~ hp + wt, data = mtcars) > newcar = data.frame(hp = 90, wt = 2.2) > predict(fit, newdata = newcar)
+1 25.83648 > predict(fit, newdata = newcar, interval = "confidence")
+
+CHAPTER 11. DISTRIBUTIONAL RESULTS
+
+43
+
+fit
+
+lwr
+
+upr
+
+1 25.83648 24.46083 27.21212
+
+> predict(fit, newdata = newcar, interval = "prediction")
+
+fit
+
+lwr
+
+upr
+
+1 25.83648 20.35687 31.31609
+
+> #Doing it manually
+
+> library(dplyr)
+
+> y = mtcars$mpg
+
+> x = as.matrix(cbind(1, select(mtcars, hp, wt)))
+
+> n = length(y)
+
+> p = ncol(x)
+
+> xtxinv = solve(t(x) %*% x)
+
+> beta = xtxinv %*% t(x) %*% y
+
+> x0 = c(1, 90, 2.2)
+
+> yhat = x %*% beta
+
+> e = y - yhat
+
+> s = sqrt(sum(e^2 / (n - p)))
+
+> yhat0 = sum(x0 * beta)
+
+> # confidence interval
+
+> yhat0 + qt(c(0.025, .975), n - p) * s * sqrt(t(x0) %*% xtxinv %*% x0)
+
+[1] 24.46083 27.21212
+
+> # prediction interval
+
+> yhat0 + qt(c(0.025, .975), n - p) * s * sqrt(1 + t(x0) %*% xtxinv %*% x0)
+
+[1] 20.35687 31.31609
+
+11.7 Confidence ellipsoids
+An hyper-ellipsoid with center v is defined as the solutions in x of (x - v)tA(x - v) = 1. The eigenvalues of A determine the length of the axes of the ellipsoid. The set of points {x | (x - v)tA(x - v)  1} lie in the interior of the hyper-ellipsoid.
+Now consider our F statistic from earlier on in the chapter:
+(K^ - m)t{K(XtX)-1Kt}-1(K^ - m)/vS2
+We would fail to reject H0 : K = m is less than the appropriate cut off from an F distribution, say F1-. So, the set of points
+{m | (K^ - m)t{K(XtX)-1Kt}-1(K^ - m)/vS2F1-  1}
+forms a confidence set. From the discussion above, we see that this is a hyper ellipsoid. This multivariate form of confidence interval is called a confidence ellipse. These are of course most useful when the dimension is 2 or 3 so that we can visualize it as an actual ellipse.
+fit = lm(mpg ~ disp + hp , mtcars)
+
+CHAPTER 11. DISTRIBUTIONAL RESULTS
+
+44
+
+open3d() plot3d(ellipse3d(fit), col = "red", alpha = .5, aspect = TRUE)
+## Doing it directly beta = coef(fit) Sigma = vcov(fit) n = nrow(mtcars); p = length(beta)
+A = Sigma * (3 * qf(.95, 3, n - p)) nms = names(beta)
+open3d() ## Using the definition of an elipse ##(x - b)' A (x - b) = 1 plot3d(ellipse3d(A, centre = beta, t = 1),
+color = "blue", alpha = .5, aspect = TRUE, xlab = nms[1], ylab = nms[2], zlab = nms[3])
+## Using the more statistical version ## Provide ellipse3d with the variance covariance matrix plot3d(ellipse3d(Sigma, centre = beta, t = sqrt(3 * qf(.95, 3, n - p))),
+color = "green", alpha = .5, aspect = TRUE, xlab = nms[1], ylab = nms[2], zlab = nms[3], add = TRUE)
+
+Chapter 12
+Residuals revisited
+12.1 Introduction to residuals
+For a good treatment of residuals and the other topics in this chapter, see the book by Myers (Myers, 1990).
+Now with some distributional results under our belt, we can discuss distributional properties of residuals. Note that, as a non-full rank linear transformation of normals, the residuals are singular normal. When y  N (X, 2I), the mean of the residuals is 0, variance of the residuals is: given by
+Var(e) = Var{(I - HX)y} = 2(I - HX).
+As a consequence, we see that the diagonal elements of I-HX  0 and thus the diagonal elements of HX must be less than one. (A fact that we'll use later).
+A problem with the residuals is that they have the units of Y and thus are not comparable across experiments. Taking
+Diag{S2(I - Hx)}-1/2e,
+i.e., standardizing the residuals by their estimated standard deviation, does get rid of the units. However, the resulting quantities are not comparable to T-statistics since the numerator elements (the residuals) are not independent of S2. The residuals standardized in this way are called "studentized" residuals. Studentized residuals are a standard part of most statistical software.
+12.1.1 Coding example
+> data(mtcars) > y = mtcars$mpg > x = cbind(1, mtcars$hp, mtcars$wt) > n = nrow(x); p = ncol(x) > hatmat = x %*% solve(t(x) %*% x) %*% t(x) > residmat = diag(rep(1, n)) - hatmat
+45
+
+CHAPTER 12. RESIDUALS REVISITED
+
+46
+
+> e = residmat %*% y
+
+> s = sqrt(sum(e^2) / (n - p))
+
+> rstd = e / s / sqrt(diag(residmat))
+
+> # compare with rstandard, r's function
+
+> # for calculating standarized residuals
+
+> cbind(rstd, rstandard(lm(y ~ x - 1)))
+
+[,1]
+
+[,2]
+
+1 -1.01458647 -1.01458647
+
+2 -0.62332752 -0.62332752
+
+3 -0.98475880 -0.98475880
+
+4 0.05332850 0.05332850
+
+5 0.14644776 0.14644776
+
+6 -0.94769800 -0.94769800
+
+...
+
+12.2 Press residuals
+
+Consider the model y  N (W, 2I) where  = [t i], W = [X i] where i is a vector of all zeros except a 1 for row i. This model has a shift in position i, for example if there is an outlier at that position. The least squares criterion can be written as
+
+p
+
+2
+
+p
+
+2
+
+yk - xkjj + yi - xijj - i .
+
+k=i
+
+j=1
+
+j=1
+
+(12.1)
+
+Consider holding  fixed, then we get that the estimate of i must satisfy
+p
+i = yi - xijj
+j=1
+
+and thus the right hand term of (12.1) is 0. Then we obtain  by minimizing
+
+p
+
+2
+
+yk - xkjj .
+
+k=i
+
+j=1
+
+Therefore ^ is exactly the least squares estimate having deleted the ith data point; notationally, ^ (-i). Thus, ^i is a form of residual obtained when deleting the ith point from the fitting then comparing it to the fitted value,
+
+p
+^ i = yi - xij^k(-i).
+j=1
+
+Notice that the fitted value at the ith data point is then
+
+p j=1
+
+xij
+
+^k(-i)
+
++
+
+^ i
+
+=
+
+yi and thus
+
+the residual is zero. The term ^ i is called the PRESS residual, the difference between
+
+the observed value and the fitted value with that point deleted.
+
+CHAPTER 12. RESIDUALS REVISITED
+
+47
+
+Since the residual at the ith data point is zero, the estimated variance from thsi model is exactly equal to the variance estimate having removed the ith data point. The t test for
+i is then a form of standardized residual, that exactly follows a t distribution under the null hypothesis that i = 0.
+
+12.2.1 Computing PRESS residuals
+
+It is interesting to note that PRESS residuals don't actually require recalculating the model with the ith datapoint deleted. Let Xt = [z1 . . . zn] so that zi is the ith row of the matrix z (hence column i of zt). We use z for the rows, since we've already reserved x for the columns of X. Notice, then that
+n
+XtX = zizti.
+i=1
+Thus, X(-i),tX(-i), the x transpose x matrix with the ith data point deleted is simply
+
+X(-i),tX(-i) = XtX - zizit.
+
+We can appeal to the Sherman, Morrison, Woodbury theorem for the inverse (Wikipedia)
+
+(X(-i),tX(-i))-1
+
+=
+
+(XtX)-1
+
++
+
+(XtX)-1zizit(XtX)-1 1 - zti(XtX)-1zi
+
+Define hii as diagonal element i of X(XtX)-1Xt which is equal to zti(XtX)-1zi. (To see
+
+this, pre and post multiply this matrix by a vector of zeros with a one in the position i, an
+
+operation which grabs the ith diagonal entry.) Furthermore, note that Xty =
+
+n i=1
+
+ziyi
+
+so
+
+that
+
+X(-i),ty(-i) = Xty - ziyi.
+
+Then we have that the predicted value for the ith data point where it was not used in the fitting is:
+
+y^i(-i) = zit(X(-i),tX(-i))-1X(-i),ty(-i)
+
+=
+
+zti
+
+(XtX)-1 + (XtX)-1zizti(XtX)-1 1 - hii
+
+=
+
+y^i
+
++
+
+1
+
+hii - hii
+
+y^i
+
+-
+
+hiiyi
+
+-
+
+h2iiyi 1 - hii
+
+=
+
+1
+
+y^i - hii
+
++
+
+yi
+
+-
+
+1
+
+yi - hii
+
+(Xty - ziyi)
+
+So that we wind up with the equality:
+
+yi
+
+- y^i(-i)
+
+=
+
+yi - y^i 1 - hii
+
+=
+
+ei 1 - hii
+
+In other words, the PRESS residuals are exactly the ordinary residuals divided by 1 - hii.
+
+CHAPTER 12. RESIDUALS REVISITED
+
+48
+
+12.3 Externally studentized residuals
+
+It's often useful to have standardized residuals where a data point in question didn't in-
+
+fluence the residual variance. The normalized PRESS residuals are, as seen in 12.2.
+
+However, the PRESS residuals are leave one out residuals, and thus the ith point was
+
+deleted for the fitted value. An alternative strategy is to normalize the ordinary residuals
+
+by dividing by a standard deviation estimate calculated with the ith data point deleted.
+
+That is,
+
+ei
+
+.
+
+s(-i) 1 - hii
+
+In
+
+this statistic, observation i hasn't Given that the PRESS residuals
+
+had are
+
+the
+ei 1-hii
+
+opportunity to impactthe variance estimate. , their variance is 2/ 1 - hii. Then we have
+
+that the press residuals normalized (divided by their standard deviations) are
+
+ ei  1 - hii
+
+If we use the natural variance estimate for the press residuals, the estimated variance calculated with the ith data point deleted, then the estimated normalized PRESS residuals are the same as the externally standardized residuals. As we know that these also arise out of the T-test for the mean shift outlier model from Section 12.2.
+
+12.4 Coding example
+First let's use the swiss dataset to show how to calculate the ordinary residuals and show that they are the same as those output by resid.
+> y = swiss$Fertility > x = cbind(1, as.matrix(swiss[,-1])) > n = nrow(x); p = ncol(x) > hatmat = x %*% solve(t(x) %*% x) %*% t(x) > ## ordinary residuals > e = (diag(rep(1, n)) - hatmat) %*% y > fit = lm(y ~ x) > ## show that they're equal by taking the max absolute difference > max(abs(e - resid(fit))) [1] 4.058975e-12
+Next, we calculate the standardized residuals and show how to get them automatically with rstandard
+> ## standardized residuals > s = sqrt(sum(e ^ 2) / (n - p)) > rstd = e / s / sqrt(1 - diag(hatmat)) > ## show that they're equal by taking the max absolute difference > max(abs(rstd - rstandard(fit))) [1] 6.638023e-13
+
+CHAPTER 12. RESIDUALS REVISITED
+
+49
+
+Next, let's calculate the PRESS residuals both by leaving out the ith observation (in this case observation 6) and by the shortcut formula
+
+>i=6 > yi = y[i] > yihat = predict(fit)[i] > hii = diag(hatmat)[i] > ## fitted model without the ith data point > y.minus.i = y[-i] > x.minus.i = x[-i,] > beta.minus.i = solve(t(x.minus.i) %*% (x.minus.i)) %*% t(x.minus.i) %*% y.minus.i > yhat.i.minus.i = sum(x[i,] * beta.minus.i) > pressi = yi - yhat.i.minus.i > c(pressi, e[i] / (1 - hii))
+Porrentruy -17.96269 -17.96269
+
+Now show that the rstudent (externally studentized) residuals and normalized PRESS residuals are the same
+
+> ## variance estimate with i deleted > e.minus.i = y.minus.i - x.minus.i %*% beta.minus.i > s.minus.i = sqrt(sum(e.minus.i ^ 2) / (n - p - 1)) > ## show that the studentized residual is the PRESS residual standardized > ei / s.minus.i / sqrt(1 - hii) Porrentruy
+-2.367218 > rstudent(fit)[i]
+6 -2.367218
+
+Finally, show that the mean shift outlier model residuals give the PRESS and the rstudent residuals.
+
+> delta = rep(0, n); delta[i] = 1
+
+> w = cbind(x, delta)
+
+> round(summary(lm(y ~ w - 1))$coef, 3)
+
+Estimate Std. Error t value Pr(>|t|)
+
+w
+
+65.456 10.170 6.436 0.000
+
+wAgriculture
+
+-0.210
+
+0.069 -3.067 0.004
+
+wExamination
+
+-0.323
+
+0.242 -1.332 0.190
+
+wEducation
+
+-0.895
+
+0.174 -5.149 0.000
+
+wCatholic
+
+0.113
+
+0.034 3.351 0.002
+
+wInfant.Mortality 1.316
+
+0.376 3.502 0.001
+
+wdelta
+
+-17.963
+
+7.588 -2.367 0.023
+
+So notice that the the estimate for wdelta is the PRESS residual while the t value is the externally studentized residual.
+
+Chapter 13 Under and overfitting
+
+In linear models, we can characterize forms of under and overfitting. For this chapter consider the following:
+Model 1: Y = X11 +
+Model 2: Y = X11 + X22 +
+where the are assumed iid normals with variance 2. We further differentiate between the assumed model and the true model. If we assume Model 1 and Model 2 is true, we have underfit the model (omitted variables that were necessary). In contrast, if we assume Model 2 and Model 1 is true, we have overfit the model (included variables that were unnecessary).
+
+13.1 Impact of underfitting
+Consider underfitting the model. That is we errantly act as if Model 1 is true, but in fact model 2 is true. Such a situation would arise if there were unmeasured or unknown confounders. Then consider the bias of our estimate of 1.
+
+E[^ 1] = E[(Xt1X1)-1X1t Y] = (X1t X1)-1Xt1(X11 + X22) = 1 + (X1t X1)-1Xt1X22.
+
+Thus, (Xt1X1)-1Xt1X22 is the bias in estimating 1. Notice that there is no bias if
+
+X1t X2
+
+=
+
+0.
+
+Consider
+
+the
+
+case
+
+where
+
+both
+
+design
+
+matrices
+
+are
+
+centered.
+
+Then
+
+1 n-1
+
+Xt1X2
+
+is the empirical variance/covariance matrix between the columns of X1 and X2. Thus,
+
+if our omitted variables are uncorrelated with our included variables, then no bias exists.
+
+One way to try to force this in practice is to randomize the levels of the variables in X1. Then, the empirical correlation will be low with high probability. This is very commonly
+
+done when X1 contains only a single treatment indicator. Our theoretical standard errors for the ^ 1 are still correct in that
+
+Var(^ 1) = (X1t X1)-12.
+
+50
+
+CHAPTER 13. UNDER AND OVERFITTING
+
+51
+
+However, we still have to estimate 2. We can also see the impact of underfitting on the bias of residual variance estimation.
+E[(n - p1)S2] = E[Yt(I - X1(Xt1X1)-1X1t Y] = (X11 + X22)t{I - X1(X1t X1)-1Xt1}(X11 + X22) + trace[{I - X1(Xt1X1)-1Xt1}2] = t2X2t {I - X1(Xt1X1)-1Xt1}X22 + (n - p1)2
+Therefore S2 is biased upward. It makes sense that we would tend to overestimate the residual variance if we've attributed to the error structure variation that is actually structured and due to unmodeled systematic variation.
+
+13.2 Impact of overfitting
+Consider now fitting Model 2 when, in fact, Model 1 is true. There is no bias in our estimate of 1, since we have fit the correct model; it's just 2 = 0.
+
+13.3 Variance under an overfit model
+
+If we fit Model 2, but Model 1 is correct, then our variance estimate is unbiased. We've fit
+the correct model, we just allowed the possibility that 2 was non-zero when it is exactly zero. Therefore S2 is unbiased for 2. Recall too that
+
+(n - p1 - p2)S22 2
+
+
+
+2n-p1-p2 ,
+
+where the subscript 2 on S22 is used to denote the fitting where Model 2 was asssumed.
+
+Similarly,
+
+(n - p1)S12 2
+
+
+
+n2 -p1 ,
+
+where S12 is the variance assuming Model 1 is true. Using the fact that the variance of a Chi squared is twice the degrees of freedom, we get that
+
+Var(S22) Var(S12)
+
+=
+
+(n - (n - p1
+
+p1)2 - p2
+
+)2
+
+.
+
+Thus, despite both estimates being unbiased, the variance of the estimated variance under Model 2 is higher.
+
+13.3.1 Variance inflation
+Now consider Var(^ 1) = (XtX)-12, where X = [X1 X2]. Recall, that the estimate for ^ 1 can be obtained by regression of eX1|X2 on ey|X2. Thus,
+^ 1 = (eXt 1|X2 eX1|X2 )-1etX1|X2 ey|X2
+
+CHAPTER 13. UNDER AND OVERFITTING
+
+52
+
+Let HX2 be the hat matrix for X2. Thus,
+Var(^ 1) = (eXt 1|X2 eX1|X2 )-1eXt 1|X2 (I - HX2 )eX1|X2 (etX1|X2 eX1|X2 )-12 = (etX1|X2 eX1|X2 )-12 - (etX1|X2 eX1|X2 )-1etX1|X2 HX2 eX1|x2 (etX1|X2 eX1|X2 )-12 = (eXt 1|X2 eX1|X2 )-12.
+The latter term drops out since
+eXt 1|X2 HX2 = X1t (I - HX2 )HX2 = 0.
+Consider any linear contrast qt1 then
+Var(qt^ 1) = qt(eXt 1|X2 eX1|X2 )-1q2 = qt(X1t X1 - Xt1HX2 X1)-1q2 = qt{(X1t X1)-1 + W}q2
+where W is a symmetric matrix. This latter identity can be obtained via the Woodbury theorem Wikipedia. Thus we can say that
+Var(qt^ 1) = qt{(X1t X1)-1 + W}q2  qt(Xt1X1)-1q2
+Therefore, the variance assuming Model 2 will always be greater than the variance assuming Model 1. Note that at no point did we utilize which model was actually true. Thus we arrive at an essential point, adding more regressors into a linear model necessarily increases the standard error of the ones already included. This is called "variation inflation". The estimated variances need not go up, since 2 will go down as we include variables. However, the central point is that one concern with including unnecessary regressors is inflating a component of the standard error needlessly.
+Further note that 2 drops out in the ratio of the variances. We can thus exactly calculate the percentage increase in variance caused by including regressors. A particularly useful such summary is the variance inflation factor (VIF).
+
+13.3.2 Variance inflation factors
+
+Assume that X1 is a vector and that the intercept has been regressed out of both of X1 and X2. Recall from above that the variance for 1 assuming Model 2 is (note 1 is a scalar since we're assuming X1 is a vector)
+
+Var(1) = (etX1|X2 eX1|X2 )-12.
+
+2 = X1t (I - HX2)X1
+
+=
+
+2 Xt1X1t
+
+×
+
+Xt1X1 Xt1(I - HX2)X1
+
+Recall from partitioning sums of squares (remember that we've removed the intercept
+from both) X1t X1 = Xt1HX2 X1 + Xt1(I - HX2 )X1
+
+CHAPTER 13. UNDER AND OVERFITTING
+
+53
+
+and
+
+that
+
+X1t HX2 X1 X1t X1
+
+is
+
+the
+
+R2
+
+value
+
+for
+
+X1
+
+as
+
+an
+
+outcome
+
+and
+
+X2
+
+as
+
+a
+
+predictor.
+
+Let's
+
+call
+
+it R12 so as not to confuse it with the R2 calcualted with Y as an outcome. Then we can
+
+write
+
+2 1 Var(1) = Xt1Xt1 1 - R12 .
+
+Note that R2 = 1 if X2 is orthogonal X1. Thus,
+
+1 1 - R12
+
+Is the relative increase in variability in estimating 1 comparing the data as it is to the ideal
+
+case
+
+where
+
+X1
+
+is
+
+orthogonal
+
+to
+
+X2.
+
+Similarly,
+
+since
+
+2 Xt1 Xt1
+
+is
+
+the
+
+variance
+
+if
+
+X2
+
+is
+
+omitted
+
+from the model. So 1/(1 - R12) is also the increase in the variance by adding the other
+
+regressors in X2.
+
+This calculation can be performed for each regressor in turn. The 1/(1 - R2) value
+
+for each regressor as an outcome with the remainder as predictors are the so-called
+
+Variance Inflation Factors (VIFs). They give information about how much addition variance
+
+is incurred by multicolinearity among the regressors.
+
+13.3.3 Coding example
+
+Let's look at variance inflation factors for the swiss dataset.
+
+> library(car)
+
+> data(swiss)
+
+> fit4 = lm(Fertility ~ ., data = swiss)
+
+> vif(fit4)
+
+Agriculture
+
+Examination
+
+Education
+
+2.284129
+
+3.675420
+
+2.774943
+
+Catholic Infant.Mortality
+
+1.937160
+
+1.107542
+
+Thus, consider examination. The VIF of 3.7 suggest there's almost four times as much variability in estimating the Examination coefficient by the inclusion of the other variables. We can show the calculation of these statistics manually as such.
+
+1 / (1 - summary(lm(Examination ~ . - Fertility, data = swiss))$r.squared) [1] 3.67542
+
+Consider comparing the estimated standard errors for the examination variable
+
+> summary(lm(Fertility ~ Examination, data = swiss))$coef
+
+Estimate Std. Error t value Pr(>|t|)
+
+(Intercept) 86.818529 3.2576034 26.651043 3.353924e-29
+
+Examination -1.011317 0.1781971 -5.675275 9.450437e-07
+
+> summary(lm(Fertility ~ ., data = swiss))$coef
+
+Estimate Std. Error t value Pr(>|t|)
+
+(Intercept)
+
+66.9151817 10.70603759 6.250229 1.906051e-07
+
+CHAPTER 13. UNDER AND OVERFITTING
+
+54
+
+Agriculture
+
+-0.1721140
+
+Examination
+
+-0.2580082
+
+Education
+
+-0.8709401
+
+Catholic
+
+0.1041153
+
+Infant.Mortality 1.0770481
+
+0.07030392 -2.448142 1.872715e-02 0.25387820 -1.016268 3.154617e-01 0.18302860 -4.758492 2.430605e-05 0.03525785 2.952969 5.190079e-03 0.38171965 2.821568 7.335715e-03
+
+Here the increase in variance is (0.25387820 / 0.1781971) squared which is approximately 2. This is much less than is predicted by the VIF because it involves the estimated variance rather than the actual variance.
+
+Chapter 14
+Parameter estimability and penalties
+In this section we consider parameter estimability and penalties.
+14.1 Estimability
+This section draws heavily from the wonderful book by Searle (2012). We define a linear combination of the slope parameters, qt, as being estimable if it is
+equal to a linear combination of the expected value of Y. In other words, qt is estimable if it is equal to ttE[Y] for some value of t.
+I find estimability most useful when X is over-specified (not full rank). For example, consider an ANOVA model
+Yij = µ + i + ij. Verify for yourself that the X matrix from this model is not full rank.
+Because ttE[Y] = ttX for all possible , q = ttX and we obtain that estimable contrasts are necessarily linear combinations of the rows of the design matrix.
+The most useful result in estimability is the invariance properties of estimable contrasts. Consider an not full rank design matrix. Then any solution to the normal equations:
+XtX = XtY
+will minimize the least squares criteria (or equivalently maximize the likelihood under spherical Gaussian assumptions). (If you don't see this, verify it yourself using the tools from the first few chapters.) Since X is not full rank, this will have infinite solutions. Let ^ and ~ be any two such solutions. For estimable quantities, qt^ = qt~ . That is, the particular solution to the normal doesn't matter for estimable quantities. This should be clear given the definition of estimability. Recall that least squares projects onto the plane defined by linear combinations of the columns of X. The projection, Y^ , is unique, while the particular linear combination is not in this case.
+To discuss further. Suppose qt^ = qt~ for two solutions to the normal equations, ^ and ~ and estimable qt. Then ttX^ = ttX~ . Let Y^ be the projection of Y on the space of linear combinations of the columns of X. However, since both are projections, Y^ = X^ = X~ . Multiplying by tt then yields a contradiction.
+55
+
+CHAPTER 14. PARAMETER ESTIMABILITY AND PENALTIES
+
+56
+
+14.1.1 Why it's useful
+Consider the one way ANOVA setting again.
+Yij = µ + i + ij.
+For i = 1, 2, j = 1, . . . , J. One can obtain parameter identifiability by setting 2 = 0, 1 = 0, µ = 0 or 1 + 2 = 0 (or one of infinitely many other linear contrasts). These constraints don't change the column space of the X matrix. (Thus the projection stays the same.) Recall that y^ij = y¯i. Estimable functions are linear combinations of E[Yij] = µ + i. So, note that
+E[Y21] - E[Y11] = 2 - 1
+is estimable and it will always be estimated by y¯2 - y¯1. Thus, regardless of which linear constraints one points on the model to achieve identifiability, the difference in the means will have the same estimate.
+This also gives us a way to go between estimates with different constraints without refitting the models. Since for two sets of constraints we have:
+y¯i = µ^ + ^i = µ~ + ~i,
+yielding a simple system of equations to convert between estimates with different constraints.
+
+14.2 Linear constraints
+
+Consider performing least squares under the full row rank linear constraints
+
+Kt = z.
+
+One could obtain these estimates using Lagrange multipliers
+
+||y - X||2 + 2t(kt - Z) = yty - 22Xty + tXtX + 2t(Kt - z).
+
+Taking a derivative with respect to lambda yields
+
+2(Kt - z) = 0
+
+(14.1)
+
+Taking a derivative with respect to  we have:
+
+-2Xty + 2XtX + 2K = 0
+
+which has a solution in  as
+
+ = (XtX)-1(Xty - K) = ^ - (XtX)-1K,
+
+(14.2)
+
+where ^ is the OLS (unconstrained) estimate. Multiplying by Kt and using (14.1) we have
+that z = Kt^ - Kt(XtX)-1K
+
+CHAPTER 14. PARAMETER ESTIMABILITY AND PENALTIES
+
+57
+
+yielding a solution for  as  = {Kt(XtX)-1K}-1(Kt^ - z).
+Plugging this back into (14.2) yields the solution:  = ^ - (XtX)-1K{Kt(XtX)-1K}-1(Kt^ - z).
+Thus, one can fit constrained least squares estimates without actually refitting the model. Notice, in particular, that if one where to multiply this estimate by Kt, the result would be z.
+
+14.2.1 Likelihood ratio tests
+
+One can use this result to derive likelihood ratio tests of H0 : K = z versus the general alternative. From the previous section, under the null hypothesis, the estimate under the null hypothesis,
+
+^ H0 = ^ - (XtX)-1K{Kt(XtX)-1K}-1(Kt^ - z).
+
+Of course, under the alternative, the estimate is ^ = (XtX)-1XtY. In both cases, the
+
+maximum
+
+likelihood
+
+variance
+
+estimate
+
+is
+
+1 n
+
+||Y
+
+- X||2
+
+with
+
+
+
+as
+
+the
+
+estimate
+
+under
+
+either
+
+the null or alternative hypothesis. Let ^H2 0 and ^2 be the two estimates.
+
+The likelihood ratio statistic is
+
+L(^ H0, ^H2 0) L(^ , ^2)
+
+=
+
+^H2 0
+
+-n/2
+.
+
+^2
+
+This is monotonically equivalent to n^2/n^H2 0. However, we reject if the null is less supported than the alternative, i.e. this statistic is small, so we could equivalently reject if
+n^H2 0/n^2 is large. Further note that
+
+n^H2 0 = ||Y - X^ H0||2 = ||Y - X^ + X^ - X^ H0||2 = ||Y - X^ ||2 + ||X^ - X^ H0||2 = n^2 + ||X^ - X^ H0||2
+
+Notationally, let
+
+SSreg = ||X^ - X^ H0||2 = ||Y^ - Y^ H0||2
+
+and SSres = n^2. The note that the inverse of our likelihood ratio is monotonically equiva-
+
+lent
+
+to
+
+SSreg SSres
+
+However, SSreg/2 and SSres/2 are both independent Chi-squared random variables
+
+with degrees of freedom Rank(K) and n - p under the null. (Prove this for homework.)
+
+Thus, our likelihood ratio statistic can exactly be converted into the F statistic of section
+
+11.4. We leave the demonstration that the two are identical as a homework exercise.
+
+CHAPTER 14. PARAMETER ESTIMABILITY AND PENALTIES
+
+58
+
+This line of thinking can be extended. Consider the sequence of hypotheses:
+H1 : K1 = z H2 : K2K1 = K2z H3 : K3K2K1 = K3K2z ...
+Each Ki is assumed full row rank and of fewer rows than Ki-1. These hypotheses are nested with H1 being the most restrictive, H2 being the second most, and so on. (Note, if H1 holds then H2 holds but not vice versa.) Consider testing H1 (null) versus H2 (alternative). Note that under our general specification, discussing this problem will apply to testing Hi versus Hj. Under the arguments above, our likelihood ratio statistic will work out to be inversely equivalent to the statistic: n^H2 1/n^H2 2.
+Further note that
+n^H2 1 = ||Y - Y^ H1|| = ||Y - Y^ H2||2 + ||Y^ H2 - Y^ H1||2 + 2(Y - Y^ H2)t(Y^ H2 - Y^ H1) = ||Y - Y^ H2||2 + ||Y^ H2 - Y^ H1||2 = SSRES(H2) + SSREG(H1 | H2)
+Here the cross product term in the second line is zero by (tedious yet straightforward) algebra and the facts that: K2K1^ H1 = K2K1^ H2 = K2z and etX = 0.
+Thus, our likelihood ratio statistic is monotically equivalent to
+SSREG(H1 | H2)/SSRES(H2).
+Furthermore, Using the developed methods in the class the numerator is Chi-Squared with Rank(K1) degrees of freedom, while the denominator has n-{Rank(K1)-Rank(K2)} degrees of freedom, and they are independent. Thus we can construct an F test for nested linear hypotheses.
+This process can be iterated, decomposing SSRES(H2), so that:
+n^H2 1 = SSREG(H1 | H2) + SSREG(H2 | H3) + SSRES(H3)
+And it could be iterated again so that:
+n^H2 1 = SSREG(H1 | H2) + SSREG(H2 | H3) + . . . SSRES(Hp)
+where SSRES(Hp) is the residual sums of squares under the most elaborate model considered. The sums of squares add so that, for example,
+SSREG(H1 | H3) = SSREG(H1 | H2) + SSREG(H2 | H3)
+and SSRES(H3) = SSREG(H3 | H4) + . . . + SSRES(H4).
+Thus, one could test any subset of the nested hypotheses by appropriately adding the sums of squares.
+
+CHAPTER 14. PARAMETER ESTIMABILITY AND PENALTIES
+
+59
+
+14.2.2 Example use
+The most popular use of the general linear hypothesis is to consider nested hypotheses. That is, consider a linear model where t = [0 1 . . . p] so that the i are ordered in decreasing scientific importance.
+H1 : 1 = 2 = 3 = . . . = p = 0 H2 : 2 = 3 = . . . = p = 0 H3 : 3 = . . . = p = 0 ... Hp : p = 0
+Then testing H1 versus H2 tests whether 1 is zero under the assumption that all of the remaining coefficients (excepting the intercept) are zero. Testing H2 versus H5 tests whether 2 = 3 = 4 = 0 under the assumption that 5 through p are 0.
+
+14.2.3 Coding examples
+Let's go through an example of fitting multiple models. We'll look at the swiss dataset. The following code fits three models for the dataset. First, we model the outcome, regional fertility, as a function of various aspects of the region. Imagine if we are particularly interested in agriculture as a variable. We fit three models: one a linear regression with just agriculture, then one including educational level variables (examination and education) and then one including all of the previous variables plus information on religion (percent Catholic) and infant mortality rates.
+data(swiss) fit1 = lm(Fertility ~ Agriculture, data = swiss) fit2 = update(fit1, Fertility ~ Agriculture + Examination + Education) fit3 = update(fit1, Fertility ~ Agriculture + Examination + Education + Catholic + Infan anova(fit1, fit2, fit3)
+The anova comand gets the relevant sums of squares for each of the models, resulting in the output
+Analysis of Variance Table
+
+Model 1: Fertility ~ Agriculture
+
+Model 2: Fertility ~ Agriculture + Examination + Education
+
+Model 3: Fertility ~ Agriculture + Examination + Education + Catholic +
+
+Infant.Mortality
+
+Res.Df RSS Df Sum of Sq
+
+F Pr(>F)
+
+1 45 6283.1
+
+2 43 3180.9 2 3102.2 30.211 8.638e-09 ***
+
+3 41 2105.0 2 1075.9 10.477 0.0002111 ***
+
+CHAPTER 14. PARAMETER ESTIMABILITY AND PENALTIES
+
+60
+
+--Signif. codes: 0 `***' 0.001 `**' 0.01 `*' 0.05 `.' 0.1 ` ' 1
+Here, it would appear that inclusion of the other variables is necessary. However, let's see if we can create these sums of squares manually using our approach.
+
+> xtilde = as.matrix(swiss);
+
+> y = xtilde[,1]
+
+> x1 = cbind(1, xtilde[,2])
+
+> x2 = cbind(1, xtilde[,2:4])
+
+> x3 = cbind(1, xtilde[,-1])
+
+> makeH = function(x) x %*% solve(t(x) %*% x) %*% t(x)
+
+> n = length(y); I = diag(n)
+
+> h1 = makeH(x1)
+
+> h2 = makeH(x2)
+
+> h3 = makeH(x3)
+
+> ssres1 = t(y) %*% (I - h1) %*% y
+
+> ssres2 = t(y) %*% (I - h2) %*% y
+
+> ssres3 = t(y) %*% (I - h3) %*% y
+
+> ssreg2g1 = t(y) %*% (h2 - h1) %*% y
+
+>ssreg3g2 = t(y) %*% (h3 - h2) %*% y
+
+> out = rbind( c(n - ncol(x1), ssres1,
+
+NA, NA),
+
+c(n - ncol(x2), ssres2, ncol(x2) - ncol(x1), ssreg2g1),
+
+c(n - ncol(x3), ssres3, ncol(x3) - ncol(x2), ssreg3g2)
+
+)
+
+> out
+
+[,1] [,2] [,3] [,4]
+
+[1,] 45 6283.116 NA
+
+NA
+
+[2,] 43 3180.925 2 3102.191
+
+[3,] 41 2105.043 2 1075.882
+
+It is interesting to note that the F test comapring Model 1 to Model 2 from the anova command is obtained by dividing 3102.191 / 2 (a chi-squared divided by its 2 degrees of freedom) by 2105.043 / 41 (an independent chi-squared divided by its 3 degrees of freedom). The denominator of the F statistic is then the residual sum of squares from Model 3, not from Model 2.
+This is why the following give two different answers for the F statistic:
+
+> anova(fit1, fit2) Analysis of Variance Table
+
+Model 1: Fertility ~ Agriculture
+
+Model 2: Fertility ~ Agriculture + Examination + Education
+
+Res.Df RSS Df Sum of Sq
+
+F Pr(>F)
+
+1 45 6283.1
+
+CHAPTER 14. PARAMETER ESTIMABILITY AND PENALTIES
+
+61
+
+2 43 3180.9 2 3102.2 20.968 4.407e-07 *** --> anova(fit1, fit2, fit3) Analysis of Variance Table
+
+Model 1: Fertility ~ Agriculture
+
+Model 2: Fertility ~ Agriculture + Examination + Education
+
+Model 3: Fertility ~ Agriculture + Examination + Education + Catholic +
+
+Infant.Mortality
+
+Res.Df RSS Df Sum of Sq
+
+F Pr(>F)
+
+1 45 6283.1
+
+2 43 3180.9 2 3102.2 30.211 8.638e-09 ***
+
+3 41 2105.0 2 1075.9 10.477 0.0002111 ***
+
+In the first case, the denominator of the F statistic is 3180.9 / 43, the residual mean squared error for Model 2, as opposed to the latter case where it is dividing by the residual mean squared error for Model 3. Of course, under the null hypothesis, either approach yields an independent chi squared statistic in the denominator. However, using the Model 3 residual mean squared error reduces the denominator degrees of freedom, though also necessarily reduces the residual sum of squared errors (since extra terms in the regression model always do that).
+
+14.3 Ridge regression
+
+Consider quadratic constraints to least squares. ||Y - X||2 + t.
+
+In this case we consider instances where X is not necessarily full rank. The addition of
+
+the penalty is called "Tikhonov regularization" for the mathematician of that name. The
+
+specific instance of this regularization in regression is called ridge regression. The matrix
+
+ is typically assumed known or set to I.
+
+Another way to envision ridge regression is to think in the terms of a posterior mode on a regression model. Specifically, -1 = /2 and consider the model where y |  
+
+N (X, 2I) and   N (0, ). Then one obtains the posterior for  and  by multiplying
+
+the two densities. The posterior mode would be obtained by minimizing minus twice the
+
+log of this product
+
+||Y - X||2/2 + t/2.
+
+which is equivalent to above in the terms of maximization for . We'll leave it as an exercise to obtain that the estimate actually obtained is
+
+^ ridge = (XtX + )-1XtY.
+
+To see how this regularization helps with invertibility of XtX, consider the case where  = I. If  is very large then XtX + I is simply small numbers added around an identity matrix, which is clearly invertible.
+
+CHAPTER 14. PARAMETER ESTIMABILITY AND PENALTIES
+
+62
+
+Consider the case where X is column centered and is of full column rank. Let UDVt be the SVD of X where UtU = VtV = I. Note then XtX = VD2Vt and (XtX)-1 = VD-2Vt so that the ordinary least squares estimate satisfies
+Y^ = X(XtX)-1XtY = UDVtVD-2VtVDUY = UUtY.
+Consider now the fitted values under ridge regression with  = I:
+Y^ ridge = X(XtX + I)-1XtY = UDVt(VD2Vt + I)-1VDUtY = UDVt(VD2Vt + VVt)-1VDUtY = UDVt{V(D2 + I)Vt}-1VDUtY = UDVtV(D2 + I)-1VtVDUtY = UD(D2 + I)-1DUtY = UWUtY
+where the third line follows since X is full column rank so that V is p × p of full rank and V-1 = Vt so that VtV = VVt = I. Here W is a diagonal matrix with elements
+Di2 Di2 + 
+where Di2 are the eigenvalues. In the not full rank case, the same identity can be found, though it takes a bit more
+work. Now assume that X is of full row rank (i.e. that n < p and there are no redundant subjects). Now note that V does not have an inverse, while U does (and U-1 = Ut. Further note via the Woodbury theorem (where  = 1/)d:
+(XtX + I)-1 = I - 2Xt(I + XXt)-1X = I - 2VDUt(UUt + UD2Ut)-1UDVt = I - 2VDUt{U(I + D2)Ut)}-1UDVt = I - 2VDUt{U(I + D2)-1Ut)}UDVt = I - 2VD(I + D2)-1DVt = I - 2VD~ Vt
+where D~ is diagonal with entries Di2/(1 + Di2) where Di are the diagonal entries of D. Then:
+Y^ Ridge = X(XtX + I)-1XtY = UDVt(I - 2VD~ Vt)VDUtY = UD(I - 2D~ )DUtY = UWUtY
+Thus we've covered the full row and column rank cases. (Omitting the instance where X is neither full row nor column rank.)
+
+CHAPTER 14. PARAMETER ESTIMABILITY AND PENALTIES
+
+63
+
+14.3.1 Coding example
+In the example below, we use the swiss data set to illustrate fitting ridge regression. In this example, penalization isn't really necessary, so the code is more used to simply show the fitting. Notice that lm.ridge and our code give slightly different answers. This is due to different scaling options for the design matrix.
+data(swiss) y = swiss[,1] x = swiss[,-1] y = y - mean(y) x = apply(x, 2, function(z) (z - mean(z)) / sd(z)) n = length(y); p = ncol(x) ##get ridge regression estimates for varying lambda lambdaSeq = seq(0, 100, by = .1) betaSeq = sapply(lambdaSeq, function(l) solve(t(x) %*% x + l * diag(rep(1, p)), t(x) %*% plot(range(lambdaSeq), range(betaSeq), type = "n", xlab = "- lambda", ylab = "Beta") for (i in 1 : p) lines(lambdaSeq, betaSeq[i,])
+
+##Use R's function for Ridge regression library(MASS) fit = lm.ridge(y ~ x, lambda = lambdaSeq) plot(fit)
+
+14.4 Lasso regression
+
+The Lasso has been somewhat of a revolution of sorts in statistics and biostatistics of late. The central idea of the lasso is to create a penalty that forces coefficients to be zero. For centered Y and centered and scaled X, consider minimizing
+
+||Y - X||2
+
+subject to
+
+p i=1
+
+|i
+
+|
+
+<
+
+t.
+
+The Lagrangian form of this minimization can be written as
+
+minimizing
+
+n
+
+||Y - X||2 +  |i|.
+
+i=1
+
+Here  is a penalty parameter. As the Lasso constrains
+
+p i=1
+
+|i
+
+|
+
+<
+
+t,
+
+which
+
+has
+
+sharp
+
+corners on the axes, it has a tendency to set parameters exactly to zero. Thus, it is
+
+thought of as doing model selection along with penalization. Moreover, the Lasso handles
+
+the p > n problem. Finally, it's a convex optimization problem, so that numerically solving
+
+for the Lasso is stable. We can more generally specify the parameter as
+
+n
+||Y - X||2 +  |i|q.
+i=1
+
+CHAPTER 14. PARAMETER ESTIMABILITY AND PENALTIES
+
+64
+
+for q > 0. We obtain a case of ridge regression when q = 2 and the Lasso when q = 1.
+
+Since (
+
+n i=1
+
+|i |q )1/q
+
+is
+
+a
+
+norm,
+
+usually
+
+called
+
+the
+
+lq
+
+norm,
+
+the
+
+various
+
+forms
+
+of
+
+regression
+
+are often calld lq regression. For example, ridge regression could be called l2 regression,
+
+the Lasso L1 regression and so on. We could write the penalized regression estimate as
+
+||Y - X||2 + ||||qq
+
+where || · ||q is the lq norm. You can visualize the parameters easily using Wolfram's alpha: |x1| + |x2|, |x1|2 + |x2|2,
+|x1|0.5 + |x2|0.5, and |x1|4 + |x2|4. Notice that as q tends to zero, it tends to all of the mass
+
+on the axes where as q tends to infinity, it tends to a square. The limit as q tends to 0 is
+
+called the l0 norm, which just penalizes the number of non-zero coefficients. Just like with ridge regression, the Lasso has a Bayesian representation. Let the prior
+
+on
+
+i
+
+be
+
+iid
+
+from
+
+a
+
+Laplacian
+
+distribution
+
+with
+
+mean
+
+0,
+
+which
+
+has
+
+density
+
+ 2
+
+exp(-|i|),
+
+and is denoted Lapplace(0, ). Then, the Lasso estimate is the posterior mean assuming
+
+y  N (X, 2I) and i iid Laplace(0, /22). Then minus twice the log of the posterior for , conditioning on , is proportional to
+
+||Y - X||2 + ||||1.
+
+The connection with Bayesian statistics is somewhat loose for lasso regression. While the Lasso is the posterior mode under a specific prior, whether or not that prior makes sense from a Bayesian perspective is not clear. Furthermore, the full posterior for a parameter in the model is averaged over several sparse models, so is actually not sparse. Also, the posterior mode is conditioned on  under these assumptions, Bayesian analysis usually take into account the full posterior.
+
+14.4.1 Coding example
+Let's give an example of coding the Lasso. Here, because the optimization problem isn't closed form, we'll rely on the lars package from Tibshirani and Efron. Also assume the code from the ridge regression exmaple.
+library(lars) fit2 = lars(x, y, type = c("lasso")) plot(fit2)
+
+Chapter 15 Asymptotics
+
+15.1 Convergence in probability
+
+A series of random variables, Yn, is said the converge in probability to a constant c if P (|Yn - c| > )  0 for any . A standard result is that convergence in probability to the mean is implied if the variance of random variable goes to zero (a consequence of Chebyshev's inequality). Specifically, let Zn = Yn - µ have mean 0, variance n2 and distribution Fn
+
+P (|Zn|  ) =
+
+dFn(zn)
+
+|zn|
+
+=
+
+dFn(zn)
+
+zn2 / 21
+
+
+
+zn2
+2
+
+dFn(zn
+
+)
+
+zn2 / 21
+
+
+
+zn2
+2
+
+dFn(zn)
+
+= n2/ 2.
+
+Thus, according to our definition, Zn converges in probability to 0 (thus Yn converges in probability to µ) if the sequence of variances tends to zero.
+Consider now convergence in probability of our slope estimate
+
+^ n = (Xnt Xn)-1Xnt Yn
+
+where subscripts have been added to denote the dependence on the sample size. This estimator is unbiased for all n. Under the assumption of iid errors, with a finite variance of Yn of I2, the variance of a linear contrast of ^ n is
+qt(XtnXn)-1q2.
+Thus a sufficient condition for consistency of qt^ n is for qt(Xnt Xn)-1q to converge to zero. Probably more useful is if sample variance covariance associated with the Xn converges, then the estimate is consistent for all linear contrasts.
+
+65
+
+CHAPTER 15. ASYMPTOTICS
+
+66
+
+In the particular case for linear regression, recall that the variance of the slope is
+
+2
+
+2
+
+ni=1(xi - x¯)2 = (n - 1)s2x,n
+
+where s2x,n is the sample variance of the x's. Thus, as long as s2x,n converges, the estimate is consistent. Alternatively, if the Xi are bounded, then the estimate will converge.
+Consider now the case where E[Yn] = Xn but Var(Yn) = n. Consider a working covariance matrix, Wn, and the estimate
+^ (Wn) = (XtnWn-1Xn)-1Xnt Wn-1Yn.
+
+The OLS estimate is the case where Wn = I. (Notice that the estimate is invariant to scale changes in Wn.). Notice that ^ (Wn) is unbiased for all n regardless of Wn. The variance of ^ (Wn) is given by
+
+(XtnWn-1Xn)-1Xnt Wn-1nWn-1Xn(Xnt Wn-1Xn)-1 Thus, linear contrasts associated with ^ (Wn) will be consistent if both
+
+1 n
+
+(Xnt Wn-1Xn
+
+)
+
+and
+
+1 n
+
+(Xnt Wn-1nWn-1Xn)
+
+converge. These are both weighted covariance matrices, weighting subjects via the work-
+
+ing covariance matrix in the first case and Wn-1nWn-1 in the latter. In the event that Wn = I then the convergence of the former reduces to convergence of the variance co-
+variance matrix of the regression variables. However, in more general cases, and the
+
+convergence of the latter weighted variance estimate, cannot be given without further re-
+
+strictions. One setting where convergence can be obtained is where Wn and n have
+
+block diagonal structures as would be seen if one had repeated measurements on sub-
+
+jects.
+
+In that case let n be the number of subjects and J be the number of observations
+
+within subjects. Further let: Xnt = [Zt1 . . . Ztn], Wn = In  W and n = In   for J × p matrices Zi and J × J matrices W and . Think of each Zi as the covariates associated
+with the repeated measurements on subject i,  is the within subject correlation and W is
+
+our working version of the within subject correlation. Then our two necessary convergent
+
+series are:
+
+1 n
+
+(Xnt Wn-1
+
+Xn)
+
+=
+
+1 n
+
+n
+
+ZtiW-1Zi,
+
+i=1
+
+and
+
+1 n
+
+(XtnWn-1
+
+nWn-1Xn
+
+)
+
+=
+
+1 n
+
+n
+
+ZtiW-1W-1zi =
+
+i=1
+
+CHAPTER 15. ASYMPTOTICS
+
+67
+
+15.2 Normality
+
+Ascertaining convergence to normality is a bit more involved. Fortunately, there's some
+
+convenient asymptotic theory to make life easier for us. Particularly, a version of the
+
+Central Limit Theorem states that if E[ i] = 0 and Var( i) = 2 for i iid and constants,
+
+dt = [dn1 . . . dnn] then
+
+
+
+n i=1
+
+dni
+
+i
+
+n i=1
+
+d2ni
+
+=
+
+dtn ||dn||
+
+
+
+N (0, 1)
+
+if max d2ni = o(
+
+n i=1
+
+d2ni).
+
+With this theorem, we have all that we need. Let Y = Xn + . Then note that
+
+^ n -  = (Xnt Xn)-1Xnt .
+
+And so,
+
+qt(^ n - )
+
+= qt(XtnXn)-1Xtn
+
+dt =
+
+ qt(XtnXn)-1q  qt(Xnt Xn)-1q ||d||
+
+for d = qt(XtnXn)-1Xn. Thus, our linear contrast is N (0, 1), provided max qt(Xnt Xn)-1Xnt = o(qt(Xnt Xn)-1q). This will always be true if our Xn matrix is bounded.
+Consider now our case where ^ (wn) = (XtWnX)-1XtY. We assume that Yt = [Y1t . . . Ynt ], Xt = [Zt1 . . . Ztn], Wn is a block matrix of W as assumed before. For context consider repeated measurements per subject. Let Yi = Zi + i where Var( i) = . Then
+relying on our earlier work:
+
+qt(^ (Wn) - ) SD{qt^ (Wn)}
+
+=
+
+qt(
+
+n i=1
+
+Zit
+
+Wzi)-1
+
+n i=1
+
+Zti
+
+W1/2-1/2
+
+i
+
+SD{qt^ (Wn)}
+
+qt( =
+
+n i=1
+
+Zti
+
+Wzi)-1
+
+n i=1
+
+Zit
+
+W1/2~i
+
+SD{qt^ (Wn)}
+
+=
+
+n i=1
+
+di~i
+
+n i=1
+
+||di||2
+
+=
+
+n i=1
+
+||di||
+
+dti ~i ||di||
+
+n i=1
+
+||di||2
+
+=
+
+n i=1
+
+||di
+
+||zi
+
+n i=1
+
+||di||2
+
+here ~i is N (0, IJ ), zi are iid with mean 0 and variance 1 and di = qt(
+
+n i=1
+
+ZitWzi)-1
+
+ZtiW1/2.
+
+Thus we have reduced our statements down to the form of our generalized central limit
+
+theorem. Thus, we have shown that our estimates are asymptotically normal.
+
+A final concern is that our statistic required . However, a consequence of Slutsky's
+
+theorem allows us to replace it with any consistent estimate. Let:
+
+ei = Yi - (ZtiZi)-1ZitYi
+
+CHAPTER 15. ASYMPTOTICS
+
+68
+
+then
+
+1 n
+
+n
+
+eieit
+
+i=1
+
+is a consistent estimate of . A last concern is the issue of assuming equal numbers
+
+of observations per subject. Generalizing this results in the same theory, just with more notational difficulties. (So we'll just assume that it's taken care of). Thus we have a fully formed methodology for performing inference on repeated measures data, where at no point did we presume knowledge of , or even a good estimate of it. This form of analysis
+
+was later generalized into Generalized Estimating Equations (GEEs).
+
+Chapter 16 Mixed models
+
+It is often the case that parameters of interest in linear models are naturally thought of as being random rather than fixed. The rational for this can come about for many reasons. The first occurs when the natural asymptotics have the number of parameters tending to infinity with the sample size. As an example, consider the Rail dataset in nlme. The measurements are echo times for sound traveling along railroad lines (a measure of health of the line). Multiple (3) measurements are collected for each rail. Consider a model of the form
+Yij = µ + ui + ij,
+
+where i is rail and j is measurement within rail. Treating the ui as fixed effects results in a circumstance where the number of parameters goes to infinity with the rails. This
+
+can lead to inconsistent parameter estimates (Neyman and Scott, 1948) (for a simple
+
+example, see).
+
+A solution to this problem is to put a distribution on the ui, say ui iid N (0, u2). This is highly related to ridge regression (from the penalization chapter). However, unlike penal-
+
+ization, this problem allows for thinking about the random effect distribution as a popula-
+
+tion distribution (the population of rails in our example).
+
+Perhaps the easiest way to think about random effects is to consider a fixed effect
+
+treatment of the ui terms. Since we included an intercept, we would need to add one
+
+linear constraint on the ui for identifiability. Consider the constraint,
+
+n i=1
+
+ui
+
+=
+
+0.
+
+Then,
+
+µ would be interpreted as and overal mean and the ui terms would be interpreted as the
+
+rail-specific deviation around that mean. The random effect model simply specifies that
+
+the Ui are iid N (0, u2) and mutually independent from ij. The mean of the distribution on the Ui has to be 0 (or fixed at a number), since it would not be identified from µ otherwise.
+A perhaps preferable way to specify the model is hierarchically, Yij | Ui  N (µ, 2) and Ui |  N (0, U2 ). Consider the impications of this model. First, note that
+
+69
+
+CHAPTER 16. MIXED MODELS
+
+70
+
+Cov(Yij, Yi j ) = Cov(Ui + ij, Ui + i j )
+
+= Cov(Ui, Ui ) + Cov( ij, i j )
+
+ 
+
+2
+
++
+
+U2
+
+if i = i 1 and j = j
+
+=
+
+2 if i = i and j = j
+
+0
+
+Otherwise
+
+(16.1) (16.2)
+(16.3)
+
+And thus the correlation between observations in the same cluster is u2/(u2 +2). This is the ratio between the between subject variability, u2, and the total variability, u2 + 2.
+Notice that the marginal model for Yi = (Yi1, . . . , Yini)t is normally distributed with mean µ × Jni and variance 2Ini + JniJnt iu2. It is by maximizing this (marginal) likelihood that we obtain the ML estimates for µ, 2, U2 .
+We can predict the Ui by considering the estimate E[Ui | Y]. To derive this, note that
+the density for Ui | Y is equal to the density of Ui | Yi, since Ui is independent of every Yi j
+for i = i . Then further note that the density for Ui | Yi is propotional to the joint density
+of Yi, Ui, which is equal to the density of Yi | Ui times the density for Ui. Omitting anything
+that is not proportional in Ui, and taking twice the natural logarithm of the the densities,
+we obtain: ||Yi - µJni - Ui||2/2 + Ui/U2 .
+
+Expanding the square, and discarding terms that are constant in Ui, we obtain that Ui is
+
+normally distributed with mean
+
+u2
+
+u2 +
+
+2 n
+
+(Y¯i
+
+-
+
+µ).
+
+Thus, if µ^ = Y¯ , our estimate of Ui is the estimate that we would typically use shrunken toward zero. The idea of shrinking estimates when simultaneously estimating several
+
+quantities is generally a good one. This has similarities with James/Stein estimation (see
+
+this review Efron and Morris, 1977).
+
+Shrinkage estimation works by trading bias for lower variance. In our example, the
+
+shrinkage factor is u2/(u2 + 2/n). Thus, the better estimated the mean for that group is (2/n is small), or the more variable the group is (u2 is large), the less shrinkage we
+have. On the other hand, the fewer observations that we have, the larger the residual
+
+variation or the smaller the inter-subject variation, the more shrinkage we have. In this
+
+way the estimation is optimally calibrated to weigh the contribution of the individual versus
+
+the contribution of the group to the estimate regarding this specific individual.
+
+16.1 General case
+In general, we might write Y | U  N (X+ZU, 2I) and U  N (0, U ). This is marginally equivalent to specifying
+Y = X + ZU + .
+
+CHAPTER 16. MIXED MODELS
+
+71
+
+Here, the marginal likelihood for Y is normal with mean X and variance ZuZt + 2I. Maximum likelihood estimates maximize the marginal likelihood via direct numerical maximization or the EM algorithm (Dempster et al., 1977). Notice, for fixed variance components, the estimate of  is a weighted least squares estimate.
+It should be noted the distinction between a mixed effect model and simply specifying a marginal variance structure. The same marginal likelihood could be obtained via the model:
+Y = X +
+where  N (0, ZuZt + 2I). However, some differences tend to arise. Often, the natural specification of a marginal variance structure doesn't impose positivity constraints that random effects do. For example, in the previous section, we saw that the covariance between measurements in the same cluster was u2/(u2 + 2), which is guaranteed to be positive. However, if fitting a general marginal covariance structure, one would typically simply parameterize the covariance structure as either positive or negative.
+Another difference lies in the hierarchical model itself. We can actually estimate the random effects if we specify them, unlike marginal models. This is a key (perhaps "the" key) defining attribute of mixed models. Again, our Best Linear Unbiased Predictor (BLUPs) is given by
+E[bU | Y]
+As a homework exercise, derive the general form of the BLUPs
+
+16.2 REML
+Let HX be the hat matrix for X. Then note that
+e = (I - HX)Y = (I - HX)ZU + (I - HX)
+Then, we can calculate the marginal distribution for as singular normal with mean (I - HX)ZU Zt(I - HX) + 2(I - HX). Taking any full rank sub-vector of the and maximizing the marginal likelihood for U and 2 is called restricted maximum likelihood (REML). REML estimates tend to be less biased than the ML estimates. For example, if yi iid N (µ, 2), maximizing the likelihood for any n - 1 of the ei = yi - y¯ yields the unbiased variance estimate (divided by n - 1) rather than the biased variance estimate obtained via maximum likelihood. REML estimates are often the default for linear mixed effect model programs.
+An alternative way to derive the REML estimates is via Bayesian thinking. Consider a model where Y |   N (X, ZuZt + 2I) and   N (0, I). Calculating the mode for u and 2 after having integrated out  as    results in the REML estimates. While this is not terribly useful for general linear mixed effect modeling, it helps us think about REML as it relates to Bayesian analysis and it allows us to extend REML in settings where residuals are less well defined, like generalized linear mixed models.
+
+CHAPTER 16. MIXED MODELS
+
+72
+
+16.3 Prediction
+
+Consider generally trying to predict U from observed data Y . Let fuy, fu, fy, fu|y and fy|u be the joint, marginal and conditional densities respectively. Let (Y ) be our estimator of U . Consider evaluating the prediction error via the expected squared loss
+E[(U - (Y ))2]
+We now show that this is minimized at (Y ) = E[U | Y ]. Note that
+E[(U - (Y ))2] = E[(U - E[U | Y ] + E[U | Y ] - (Y ))2] = E[(U - E[U | Y ])2] - 2E[(U - E[U | Y ])]E[(E[U | Y ] - (Y ))] + E[(E[U | Y ] - (Y ))2] = E[(U - E[U | Y ])2] + E[(E[U | Y ] - (Y ))2]  E[(U - E[U | Y ])2].
+This argument should seem familiar. (In fact, Hilbert space results generalize these kinds of arguments into one theorem.) Therefore, E[U | Y ] is the best predictor. Note, that it is always the best predictor, regardless of the settting. Furthermore, in the context of linear models, this predictor is both linear (in Y) and unbiased. We mean unbiased in the sense of:
+E[U - E[U | Y ]] = 0.
+Therefore, even in the more restricted class of linear estimators, in the case of mixed models, E[U | Y ] remains best.
+A complication arises in that we do not know the variance components. As that is the case, we must plug in the estimates (either REML or ML). The BLUPs lose their optimality properties then and are thus often called EBLUPs (for empirical BLUPs).
+Prediction of this sort relates to so-called empirical Bayesian prediction and shrinkage estimation. In your more advanced classes on decision theory, you'll learn about loss functions and uniform desirability of shrinkage estimators over the straightforward estimators. (In our case the straightforward estimator is the one that treats the random effects as if fixed.) This line of thinking yields yet another use for random effect models, where we might apply them merely for the benefits of shrinkage, but don't actually think of our random effects as if random. Consider settings like genomics. The genes being studied are exactly the quantities of interest, not a random sample from a population of genes. However, it remains useful to treat effects associated with genes as if random to obtain the benefits of shrinkage.
+
+16.4 P-splines
+16.4.1 Regression splines
+The application to splines has been a very successful, relatively new, use of mixed models. To discuss the methodology, we need to introduce splines briefly. We will only
+
+CHAPTER 16. MIXED MODELS
+
+73
+
+overview this area and focus on regression splines, while acknowledging that other spline bases may be preferable.
+Let (a)+ = a if a > 0 and 0 otherwise. Let  be a known knot location. Now consider the model:
+E[Yi] = 0 + 1xi + 1(xi - )+.
+For xi values less than or equal to , we have
+E[Yi] = 0 + 1xi
+and for xi values above  we have
+E[Yi] = (0 + 1xi) + (1 + 1)xi.
+Thus, the response function f (x) = 0 = 1x + 1(x - )+ is continuous at  and is a line before and after. This allows us to create "hockey stick" models, with a line below  and a line with a different slope afterwards. Furthermore, we could expand the model as
+K
+E[Yi] = 0 + 1xi + k(xi - k)+.
+k=1
+where k are knot points. Not the model is a spiky, but flexible, function that is linear between the knots and meets at the knots.
+To make the fit less spiky, we want continuous differentiability at the knot points. First note that the function (x)+p has p - 1 continuous derivatives at 0. To see this, take the limit to zero of the derivatives from the right and the left. Thus, the function
+K
+f (x) = 0 + 1x + 2x2 + k(xi - k)2+
+k=1
+will consist of parabolas between the knot points and will have one continuous derivative at the knot points. This will fit a smooth function that can accommodate a wide variety of data shapes.
+
+16.4.2 Coding example
+16.5 Further reading
+A great book on mixed models in R is Pinheiro and Bates (2006). In addition, the books by Searle, McCulloch, Verbeke and Molenberghs are wonderful treatments of the topic (McCulloch and Searle, 2001; Verbeke and Molenberghs, 2009). Finally, the newer package lme4 has a series of vignettes.
+
+Chapter 17
+Bayes analysis
+17.1 Introduction to Bayesian analysis
+Bayesian analysis is a form of statistical inference relying on Baye's rule. The general version of Baye's rule states that
+f (y|x) = f (x|y)f (y)/f (x)
+where we're using f (loosely) as the appropriate density, mass function or probability and x and y represent random variables or events.
+In the context of Bayesian analysis, Baye's rule is used in the following way. Let L(; y) be the likelihood associated with data, y, and parameter . We codify our prior knowledge about  with a prior distribution, (). Then, a Bayesian analysis is performed via the posterior distribution
+( | y) = f (y | )()/f (y)  f (y | )()  L(; y)().
+Therefore, one obtains the posterior, up to multiplicative constants, by multiplying the likelihood times the prior.
+Coupled with Bayesian analysis is Bayesian interpretation of the probabilities. The prior is viewed a belief and the posterior is then an updated belief coupling the objective evidence (the likelihood) with the subjective belief (the prior). By viewing probabilities as personal quantifications of beliefs, a Bayesian can talk about the probability of things that frequentists cant. So, for example, if I roll a die and don't show you the result, you as a Bayesian can say that the probability that this specific roll is a six is one sixth. You as a frequentist, in contrast, must say that in one sixth of repetitions of this experiment, the result will be a six. To a frequentist, this specific roll is either six or not.
+This distinction in probabilistic interpretation has consequences in statistical interpretations. For example in diagnostic tests, a Bayesian can talk about the probability that a person has a disease, whereas a frequency interpretation relies on the percentage of diseased people in a population of those similar.
+Personally, I've never minded either interpretation, but to many, the Bayesian interpretation seems more natural. In contrast, many practitioners dislike Bayesian analysis because of the prior specification, and the heavy reliance on fully specified models.
+74
+
+CHAPTER 17. BAYES ANALYSIS
+
+75
+
+It should be noted that the discussion up to this point contrasted classical frequency thinking with classical subjective Bayesian thinking. In fact, most modern applied statisticians use hybrid approaches. They might, for example, develop a procedure with Bayesian tools (the manipulation of conditional distributions with priors on the parameters), but evaluate the procedure using frequency error rates. For all intents and purposes, such a procedure is frequentist, just developed with a Bayesian mindset. In contrast, many frequency statistical practitioners interpret their results with an approximate Bayesian mindset. Such procedures are simply Bayesian without the formalism. Even between these approaches there's continuous shades of gray. Therefore, saying a modern statistician is either Bayesian or frequentist is usually misleading, unless that person does research or writes on statistical foundations. Nonetheless, foundational thinking is useful for understanding and clarifying thinking. It's worth then reading and internatlizing the literature on foundations for this reason alone. It's a lot like working on core drills to get better at a sport. That and it's quite a bit of fun! Some of my favorite modern writers on the topic include (heavily emphasizing people I know pretty well or have run into recently): Jim Berger, Nancy Reid, Richard Royall, Deborah Mayo, David Cox, Charles Rohde, Andrew Gelman, Larry Wasserman and Jeff Blume. Their work will point to many others (Basu, Birnbaum, De Finetti, Lindley all also come to mind).
+Finally, it should also be noted that Bayes versus frequency is far from the only schism in statistical foundations. Personally, I find the distinction between direct use of the design in frequency analysis to obtain robustness, like is often done is randomization testing and survey sampling, versus fully specified modeling a larger distinction than how one uses the model (Bayes versus frequentist). In addition, causal analysis versus association (non-causal) analysis forms a large distinction and one can perform Bayes or frequentists causal analysis and non-causal analyses. Furthermore, the likelihood paradigm (Royall, 1997) offers a third inferential technique given a model over Bayes and frequency interpretations.
+
+17.2 Basic Bayesian models
+
+17.2.1 Binomial
+
+We'll begin our discussion of Bayesian models by using some count outcome cases to build intuition. First, consider a series of coin flips, X1, . . . , Xn  Bernoulli(). The likelihood associated with this experiment is
+L()   i xi(1 - )n- i xi = x(1 - )n-x
+
+where x = i xi. Notice the likelihood depends only on the total number of successes. Consider putting a Beta(, ) prior on . The the posterior is
+
+( | x)  L() × ()  x+-1(1 - )n-x+-1
+
+therefore the posterior distribution is Beta(x + , n - x + ). The posterior mean is
+
+x+
+
+
+
+E[ | x] =
+
+= p^ + (1 - )
+
+n++
+
++
+
+CHAPTER 17. BAYES ANALYSIS
+
+76
+
+Therefore, the posterior mean is a weighted average of the MLE (p^) and the prior mean
+
+ +
+
+.
+
+The
+
+weight
+
+is
+
+n
+
+=
+
+.
+
+n++
+
+Notice that, as n   for fixed  and ,   1 and the MLE dominates. That is, as we collect more data, the prior becomes less relevant and the data, in the form of the likelihood, dominates. On the other hand, for fixed n, as either  or  go to infinity (or both), the prior dominates (  0). For the Beta distribution  or  going to infinity makes the distribution much more peaked. Thus, if we are more certain of our prior distribution, the data matters less.
+
+17.2.2 Poisson
+
+Let X  Poisson(t). Then
+
+L()  xe-t.
+
+Consider putting a Gamma(,  -1) prior on . Then we have that
+
+( | x)  x+-1e-(t+)
+
+and thus the posterior is Gamma(x + , (t +  )-1). Because of the inversion of the second scale parameter of the Gamma, often Bayesians specify it in the terms of the inverse (as in Gamma(x + , t +  )). Often to avoid confusion, the mean of the gamma will be given to ensure no confusion over the parameterization.
+The posterior mean is:
+
+E[
+
+|
+
+x]
+
+=
+
+x
+
++
+
+=
+
+^
+
+ + (1 - )
+
+t+
+
+
+
+where ^ = x/t is the MLE (the observed rate) and / is the prior estimate. In this case
+
+t =
+t+ so that as t   the MLE dominates while the prior dominates as   .
+
+17.3 Bayesian Linear Models
+17.3.1 Bayesian Linear Models
+Recall our standard Gaussian linear model, where Y | X, , 2  N (X, 2I). Consider three common prior specifications:
+1.  | 2  N (0, 20) and -2  Gamma(0, 0-1). 2.   N (0, 0) and -2  Gamma(0, 0-1).
+
+CHAPTER 17. BAYES ANALYSIS
+
+77
+
+3. (, 2)  -2.
+The final prior specification is not a proper density. It doesn't have a defined integral for the elements of  from - to  and for 0  2 < . However, proceeding as if it were a proper density yields a proper distribution for the posterior. Such "improper" priors are often used to specify putatively uninformative distributions that yield valid posteriors. In this case, the posterior has the property of the posterior mode being centered around ^ .
+The distinction between the first case and the second is the inclusion of 2 in the prior specification for . This is useful for making all posterior distributions tractable, including that of  integrated over 2. However, it may or may not reflect the desired prior distribution.
+The second specification has tractable full conditionals. That is, we can easily figure out  | 2, y, X and 2 | , y, X. However, the posterior marginals of the parameters ( | y, X in particular) are not tractable. This posterior is often explored using Monte Carlo.
+The third specification is also completely tractable.
+
+17.4 Monte Carlo sampling
+Even though many of our Bayesian models are completely tractable, we will explore the posteriors via Monte Carlo. The reason for this is to get students familiar with Monte Carlo so that they can apply it in the more complex settings that they are likely to encounter in practice. Specifically, usually fully tractable posteriors are more of an exception than the rule. For the most part, for linear models, one should use the fully tractable results as they are much faster.
+We now give some strategies for Monte Carlo sampling from a posterior.
+17.4.1 Sequential Monte Carlo
+Notice for three variables, X, Y and Z, sampling fz(z), fy|z(y) and fx|y,z(x | y, z) yields a multivariate draw from the joint distribution f (x, y, z). So, for example, consider setting 3 of our prior specifications
+ | 2, y, X  N (^ , XtX2) and -2 | y, X  Gamma{(n - p)/2, 2/(n - p)S2}
+Notice that E[-2 | X, y] = 1/S2. To simualte from this distribution, we first simulate from -2 | X, y then plug that simulation into  | 2, y, X and simulate an . The pair is a draw from the joint posterior distribution of  and -2.
+17.4.2 Gibbs sampling
+Consider again our three random variables. Suppose that an initial value of x and y, say x(1) and y(1) was obtained. Then consider simulating
+
+CHAPTER 17. BAYES ANALYSIS
+
+78
+
+1. z(1)  fz|x,y(z | x(1), y(1))
+2. x(2)  fx|y,z(x | y(1), z(2))
+3. y(2)  fy|x,z(y | x(2), z(2))
+4. z(2)  fz|x,y(z | x(2), y(2))
+5. x(3)  fx|y,z(x | y(2), z(3))
+and so on. In other words, always update a simulated variable using the most recently simulated version of the other variables. In fact, one need not use the full conditionals. Any collection of conditionals would work. Moreover, any random order works, or even randomizing the order each iteration. However, some conditions have to be met for the asymptotics of the sampler to work. For example, you have to update every variable infinitely often and the whole space has to be explorable by the sampler. If the conditions are met, the sampler is a Markov chain whose stationary distribution, i.e. the limiting distribution, is f (x, y, z). Moreover, there's lots of results saying that you can use the ouput of the sampler in much the same way one uses iid samples. For example approximating posterior means with the average of the simulated variables. However, the Markovian nature of the sampler makes using the samples a little trickier. One could try to combat this by running the chain for a while and throwing out all of the early simulations used to "burn in" the sampler. This throws away a lot of data. Our preferred method is to use good starting values (why not start at the MLE?) and use all of the simulated data.
+Let's illustrate the sampler with prior specification prior 2. Consider the simplified model:
+Y | , X,   N (X, -1I) and   N (0, -1I) and   Gamma(/2,  -1.
+Under this specification, the full conditionals are:
+
+ | y, X,   N {(XtX + I)-1Xty, (XtX + I)-1}  | y, X,   Gamma{(n + )/2, 2(||y - X||2 +  )-1}
+data("mtcars") y = mtcars$mpg - mean(mtcars$mpg) x = cbind(1, mtcars$wt - mean(mtcars$wt))
+n = length(y) p = ncol(x)
+fitML = lm(y ~ x - 1)
+
+xtx = t(x) %*% x xty = as.vector(t(x) %*% y)
+
+CHAPTER 17. BAYES ANALYSIS
+
+79
+
+nosim = 10000
+rmvnorm = function(mu, Sigma) as.vector(mu + chol(Sigma) %*% rnorm(length(mu)))
+thetaCurrent = 1 / summary(fitML)$sigma^2 beta = NULL theta = thetaCurrent * 100 psi = .01 alpha = .01 tau = .01 * summary(fitML)$sigma^2 for (i in 1 : nosim){
+V = solve(xtx * thetaCurrent + psi * diag(1, p, p)) mu = V %*% xty * thetaCurrent betaCurrent = rmvnorm(mu, V) sumesq = sum((y - x %*% betaCurrent)^2) thetaCurrent = rgamma(1, (n + alpha) / 2, rate = (sumesq + tau)/2) theta = c(theta, thetaCurrent) beta = rbind(beta, betaCurrent) } sigma = sqrt(1/ theta) quantile(beta[,1], c(.025, .975)) quantile(beta2[,2], c(.025, .975)) quantile(sigma, c(0.025, .975))
+
+Bibliography
+Dempster, A. P., Laird, N. M., and Rubin, D. B. (1977). Maximum likelihood from incomplete data via the em algorithm. Journal of the royal statistical society. Series B (methodological), pages 1­38.
+Efron, B. and Morris, C. N. (1977). Stein's paradox in statistics. WH Freeman. McCulloch, C. E. and Searle, S. R. (2001). Linear mixed models (lmms). Generalized,
+linear, and mixed models, pages 156­186. Myers, R. H. (1990). Classical and modern regression with applications, volume 2.
+Duxbury Press Belmont, CA. Neyman, J. and Scott, E. L. (1948). Consistent estimates based on partially consistent
+observations. Econometrica: Journal of the Econometric Society, pages 1­32. Pinheiro, J. and Bates, D. (2006). Mixed-effects models in S and S-PLUS. Springer
+Science & Business Media. Royall, R. (1997). Statistical evidence: a likelihood paradigm, volume 71. CRC press. Searle, S. R. (2012). Linear models. Wiley. Verbeke, G. and Molenberghs, G. (2009). Linear mixed models for longitudinal data.
+Springer Science & Business Media.
+80
+
+
