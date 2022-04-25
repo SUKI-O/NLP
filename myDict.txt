@@ -1,0 +1,13 @@
+name,Suki
+last_name,Ogihara
+age, 38
+birthday,1983/08/02
+country,United States
+city, Philadelphia
+email, ituki82@gmail.com
+US phone, +1 267-566-8610
+Japanese phone, +81 70-4765-8610
+gmail, ituki82
+github, suki-o
+husband, Douglas
+grandma, Yasuko
